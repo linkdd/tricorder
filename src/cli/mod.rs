@@ -1,3 +1,4 @@
+mod external;
 mod info;
 mod exec;
 
@@ -12,19 +13,23 @@ use std::{
 };
 
 pub fn run(matches: ArgMatches) -> Result<()> {
-  let inventory = get_inventory(matches.value_of("inventory"))?;
-  let hosts = get_host_list(
-    inventory,
-    matches.value_of("host_id"),
-    matches.value_of("host_tags"),
-  );
+  let inventory_arg = matches.value_of("inventory");
+  let host_id_arg = matches.value_of("host_id");
+  let host_tags_arg = matches.value_of("host_tags");
 
   match matches.subcommand() {
     Some(("do", sub_matches)) => {
+      let inventory = get_inventory(inventory_arg)?;
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       exec::run(hosts, sub_matches)
     },
     Some(("info", sub_matches)) => {
+      let inventory = get_inventory(inventory_arg)?;
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       info::run(hosts, sub_matches)
+    },
+    Some((cmd, sub_matches)) => {
+      external::run(cmd, inventory_arg, host_id_arg, host_tags_arg, sub_matches)
     },
     _ => {
       unreachable!("Exhausted list of subcommands and subcommand_required prevents `None`")
