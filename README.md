@@ -80,11 +80,11 @@ is written as a JSON document on `stdout`:
 This way, you can compose this tool with `jq` to extract the relevant informations
 in your scripts.
 
+For more informations, consult the [documentation](https://github.com/linkdd/tricorder/wiki).
+
 ## Roadmap
 
- - [x] Run command on multiple remote hosts
- - [ ] Upload local file to multiple hosts
- - [ ] Download file from multiple hosts
+Checkout the [Bug Tracker](https://github.com/linkdd/tricorder/issues).
 
 ## License
 
