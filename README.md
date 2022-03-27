@@ -80,7 +80,7 @@ is written as a JSON document on `stdout`:
 This way, you can compose this tool with `jq` to extract the relevant informations
 in your scripts.
 
-For more informations, consult the [documentation](https://github.com/linkdd/tricorder/wiki).
+For more informations, consult the [documentation](https://docs.rs/tricorder).
 
 ## Roadmap
 
