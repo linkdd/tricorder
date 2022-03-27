@@ -1,3 +1,5 @@
+//! Prints host information from inventory
+
 use crate::{Result, Host};
 
 use clap::ArgMatches;
