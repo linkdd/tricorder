@@ -54,6 +54,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "file-mode"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "773ea145485772b8d354624b32adbe20e776353d3e48c7b03ef44e3455e9815c"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -355,6 +364,7 @@ name = "tricorder"
 version = "0.3.0"
 dependencies = [
  "clap",
+ "file-mode",
  "is_executable",
  "serde",
  "serde_derive",
