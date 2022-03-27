@@ -1,3 +1,4 @@
+mod info;
 mod exec;
 
 use crate::{Result, Inventory, Host};
@@ -21,6 +22,9 @@ pub fn run(matches: ArgMatches) -> Result<()> {
   match matches.subcommand() {
     Some(("do", sub_matches)) => {
       exec::run(hosts, sub_matches)
+    },
+    Some(("info", sub_matches)) => {
+      info::run(hosts, sub_matches)
     },
     _ => {
       unreachable!("Exhausted list of subcommands and subcommand_required prevents `None`")

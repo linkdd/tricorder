@@ -18,6 +18,10 @@ fn main() -> Result<()> {
       .required(false)
     )
     .subcommand(
+      Command::new("info")
+        .about("Gather information about hosts in the inventory")
+    )
+    .subcommand(
       Command::new("do")
         .about("Execute a command on multiple hosts")
         .arg(

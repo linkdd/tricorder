@@ -1,15 +1,17 @@
 use crate::Result;
 
-use serde_derive::Deserialize;
+use serde_json::Value;
+use serde_derive::{Serialize, Deserialize};
 use ssh2::Session;
 
 use std::{
+  collections::HashMap,
   io::prelude::*,
   net::TcpStream,
 };
 
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Host {
   pub id: String,
   pub address: String,
@@ -17,6 +19,8 @@ pub struct Host {
   pub user: String,
   #[serde(default = "Host::default_tags")]
   pub tags: Vec<String>,
+  #[serde(default = "Host::default_vars")]
+  pub vars: HashMap<String, Value>,
 }
 
 impl Host {
@@ -45,5 +49,9 @@ impl Host {
 
   pub fn default_tags() -> Vec<String> {
     vec![]
+  }
+
+  pub fn default_vars() -> HashMap<String, Value> {
+    HashMap::new()
   }
 }
