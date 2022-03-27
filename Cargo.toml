@@ -1,6 +1,17 @@
 [package]
 name = "tricorder"
 version = "0.3.0"
+
+description = "Automation, the KISS way, no YAML involved."
+keywords = ["automation", "ssh"]
+categories = ["command-line-utilities"]
+
+homepage = "https://github.com/linkdd/tricorder"
+repository = "https://github.com/linkdd/tricorder"
+
+license-file = "LICENSE.txt"
+readme = "README.md"
+
 edition = "2021"
 
 [dependencies]
