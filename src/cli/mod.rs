@@ -1,6 +1,7 @@
 mod external;
 mod info;
 mod exec;
+mod upload;
 
 use crate::{Result, Inventory, Host};
 
@@ -18,15 +19,20 @@ pub fn run(matches: ArgMatches) -> Result<()> {
   let host_tags_arg = matches.value_of("host_tags");
 
   match matches.subcommand() {
+    Some(("info", sub_matches)) => {
+      let inventory = get_inventory(inventory_arg)?;
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
+      info::run(hosts, sub_matches)
+    },
     Some(("do", sub_matches)) => {
       let inventory = get_inventory(inventory_arg)?;
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       exec::run(hosts, sub_matches)
     },
-    Some(("info", sub_matches)) => {
+    Some(("upload", sub_matches)) => {
       let inventory = get_inventory(inventory_arg)?;
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
-      info::run(hosts, sub_matches)
+      upload::run(hosts, sub_matches)
     },
     Some((cmd, sub_matches)) => {
       external::run(cmd, inventory_arg, host_id_arg, host_tags_arg, sub_matches)

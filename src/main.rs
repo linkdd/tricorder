@@ -32,6 +32,24 @@ fn main() -> Result<()> {
           .required(true)
         )
     )
+    .subcommand(
+      Command::new("upload")
+        .about("Upload a file to multiple hosts")
+        .arg(
+          arg!(template: -T --template "If set, the file is a template with the current host as context data")
+        )
+        .arg(
+          arg!(local_path: [LOCAL_PATH] "Path on local host to the file to be uploaded")
+          .required(true)
+        )
+        .arg(
+          arg!(remote_path: [REMOTE_PATH] "Path on remote host to upload the file")
+          .required(true)
+        )
+        .arg(
+          arg!(file_mode: [MODE] "UNIX file mode to set on the uploaded file (default: 0644)")
+        )
+    )
     .get_matches();
 
   cli::run(matches)
