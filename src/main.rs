@@ -1,37 +1,32 @@
 use tricorder::{Result, cli};
-use serde_json::{json, Value};
+use clap::{command, arg, Command};
 
 fn main() -> Result<()> {
-  let (hosts, cmd) = cli::parse_args()?;
-  let results: Vec<Value> = hosts
-    .iter()
-    .map(|host| {
-      eprintln!("Executing command on {}...", host.id);
-      host.exec(&cmd)
-        .map_or_else(
-          |err| {
-            json!({
-              "host": host.id,
-              "success": false,
-              "error": format!("{}", err),
-            })
-          },
-          |(exit_code, output)| {
-            json!({
-              "host": host.id,
-              "success": true,
-              "info": {
-                "exit_code": exit_code,
-                "output": output,
-              },
-            })
-          }
+  let matches = command!()
+    .propagate_version(true)
+    .subcommand_required(true)
+    .arg(
+      arg!(inventory: -i --inventory <FILE> "Path to TOML inventory file or program producing JSON inventory")
+      .required(false)
+    )
+    .arg(
+      arg!(host_id: -H --host_id <STR> "Identifier of the host to connect to")
+      .required(false)
+    )
+    .arg(
+      arg!(host_tags: -t --host_tags <STR> "Comma-separated list of tags identifying the hosts to connect to")
+      .required(false)
+    )
+    .subcommand(
+      Command::new("do")
+        .about("Execute a command on multiple hosts")
+        .arg(
+          arg!(cmd: [COMMAND] "Command to run on each host")
+          .last(true)
+          .required(true)
         )
-    })
-    .collect();
+    )
+    .get_matches();
 
-  let out = json!(results);
-  println!("{}", out);
-
-  Ok(())
+  cli::run(matches)
 }
