@@ -1,3 +1,20 @@
+//! Upload a file to multiple remote hosts.
+//!
+//! Usage:
+//!
+//! ```
+//! $ tricorder -i inventory upload LOCAL_PATH REMOTE_PATH [FILE_MODE]
+//! $ tricorder -i inventory upload -T LOCAL_PATH REMOTE_PATH [FILE_MODE]
+//! ```
+//!
+//! If not provided, `FILE_MODE` defaults to `0644`.
+//!
+//! The following options are available:
+//!
+//! | Flag | Description |
+//! | --- | --- |
+//! | `-T, --template` | If set, treats `LOCAL_PATH` as a template with the current host as input data. |
+
 use crate::{Result, Host};
 
 use clap::ArgMatches;

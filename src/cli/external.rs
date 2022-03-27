@@ -1,3 +1,23 @@
+//! Run an external command found in `$PATH`.
+//!
+//! External subcommands are called with the following environment variables:
+//!
+//! | Variable | Description |
+//! | --- | --- |
+//! | `TRICORDER_INVENTORY` | Value of the `-i, --inventory` flag |
+//! | `TRICORDER_HOST_ID` | Value of the `-H, --host_id` flag |
+//! | `TRICORDER_HOST_TAGS` | Value of the `-t, --host_tags` flag |
+//!
+//! Internally, calling `tricorder [global-options...] SUBCOMMAND [options...]`
+//! would be similar to:
+//!
+//! ```
+//! $ export TRICORDER_INVENTORY="..."
+//! $ export TRICORDER_HOST_ID="..."
+//! $ export TRICORDER_HOST_TAGS="..."
+//! $ tricorder-SUBCOMMAND [options...]
+//! ```
+
 use crate::Result;
 
 use clap::ArgMatches;

@@ -1,7 +1,26 @@
-mod external;
-mod info;
-mod exec;
-mod upload;
+//! Command Line Interface to **tricorder** capabilities.
+//!
+//! **tricorder** is distributed as a static command line tool. It is agent-less
+//! and connects to remote hosts via SSH (authentication is done via `ssh-agent`
+//! on the local host).
+//!
+//! It requires an [[Inventory]] and a selection of hosts to perform a task:
+//!
+//! | Global flag | Description |
+//! | --- | --- |
+//! | `-i, --inventory <PATH>` | Path to a TOML inventory file or an executable producing a JSON inventory |
+//! | `-H, --host_id <STR>` | Specific host on which to perform the task |
+//! | `-t, --host_tags <STR>` | Comma-separated list of tags to select the hosts |
+//!
+//! > **NB:**
+//! >   - If `-H` is provided, `-t` will be ignored.
+//! >   - If `-i` is omitted, we assume an inventory with only `root@localhost:22`
+//! >   - The host needs only one tag from the list to match in order to be selected (boolean OR)
+
+pub mod external;
+pub mod info;
+pub mod exec;
+pub mod upload;
 
 use crate::{Result, Inventory, Host};
 

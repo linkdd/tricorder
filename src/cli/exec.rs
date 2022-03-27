@@ -1,3 +1,40 @@
+//! Execute a command on multiple hosts.
+//!
+//! Usage:
+//!
+//! ```
+//! $ tricorder -i inventory do -- echo "run on all hosts"
+//! $ tricorder -i inventory -H foo do -- echo "run only on host 'foo'"
+//! $ tricorder -i inventory -t myapp do -- echo "run only on hosts tagged with 'myapp'"
+//! ```
+//!
+//! The result is a JSON document with the following structure:
+//!
+//! ```json
+//! [
+//!   {
+//!     "host": "example-0",
+//!     "success": true,
+//!     "info": {
+//!       "exit_code": 0,
+//!       "output": "..."
+//!     }
+//!   },
+//!   {
+//!     "host": "example-1",
+//!     "success": false,
+//!     "error": "..."
+//!   }
+//! ]
+//! ```
+//!
+//! Commands can be templated with data from the host as defined in the
+//! inventory:
+//!
+//! ```
+//! $ tricorder -i inventory do -- echo "{host.id} says {host.vars.msg}"
+//! ```
+
 use crate::{Result, Host};
 
 use clap::ArgMatches;
