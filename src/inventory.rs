@@ -2,16 +2,15 @@ use crate::{Result, Host};
 
 use serde_derive::Deserialize;
 
-
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct Inventory {
-  #[serde(default = "default_hostlist")]
+  #[serde(default = "Inventory::default_hostlist")]
   pub hosts: Vec<Host>,
 }
 
 impl Inventory {
   pub fn new() -> Self {
-    Inventory { hosts: default_hostlist() }
+    Inventory { hosts: Self::default_hostlist() }
   }
 
   pub fn from_toml(content: &str) -> Result<Self> {
@@ -44,13 +43,14 @@ impl Inventory {
       .map(|host| host.clone())
       .collect()
   }
-}
 
-fn default_hostlist() -> Vec<Host> {
-  vec![Host {
-    id: String::from("localhost"),
-    address: String::from("localhost:22"),
-    user: String::from("root"),
-    tags: vec![],
-  }]
+  pub fn default_hostlist() -> Vec<Host> {
+    vec![Host {
+      id: String::from("localhost"),
+      address: String::from("localhost:22"),
+      user: Host::default_user(),
+      tags: Host::default_tags(),
+      vars: Host::default_vars(),
+    }]
+  }
 }

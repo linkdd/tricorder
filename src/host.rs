@@ -13,9 +13,9 @@ use std::{
 pub struct Host {
   pub id: String,
   pub address: String,
-  #[serde(default = "default_user")]
+  #[serde(default = "Host::default_user")]
   pub user: String,
-  #[serde(default = "default_tags")]
+  #[serde(default = "Host::default_tags")]
   pub tags: Vec<String>,
 }
 
@@ -38,12 +38,12 @@ impl Host {
 
     Ok((exit_code, output))
   }
-}
 
-fn default_user() -> String {
-  String::from("root")
-}
+  pub fn default_user() -> String {
+    String::from("root")
+  }
 
-fn default_tags() -> Vec<String> {
-  vec![]
+  pub fn default_tags() -> Vec<String> {
+    vec![]
+  }
 }
