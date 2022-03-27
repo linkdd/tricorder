@@ -49,9 +49,9 @@ user = "admin"
 Then, run one of the following commands:
 
 ```
-$ tricorder -i /path/to/inventory -- echo "run on all hosts"
-$ tricorder -i /path/to/inventory -H backend -- echo "run on specific host"
-$ tricorder -i /path/to/inventory -t server,myapp -- echo "run on all hosts matching tags"
+$ tricorder -i /path/to/inventory do -- echo "run on all hosts"
+$ tricorder -i /path/to/inventory -H backend do -- echo "run on specific host"
+$ tricorder -i /path/to/inventory -t server,myapp do -- echo "run on all hosts matching tags"
 ```
 
 > **NB:** Authentication is done via `ssh-agent` only.

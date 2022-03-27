@@ -1,6 +1,9 @@
+mod info;
+mod exec;
+
 use crate::{Result, Inventory, Host};
 
-use clap::{command, arg};
+use clap::ArgMatches;
 use is_executable::IsExecutable;
 use std::{
   path::Path,
@@ -8,28 +11,7 @@ use std::{
   fs
 };
 
-pub fn parse_args() -> Result<(Vec<Host>, String)> {
-  let matches = command!()
-    .arg(
-      arg!(inventory: -i --inventory <FILE> "Path to TOML inventory file or program producing JSON inventory")
-      .required(false)
-    )
-    .arg(
-      arg!(host_id: -H --host_id <STR> "Identifier of the host to connect to")
-      .required(false)
-    )
-    .arg(
-      arg!(host_tags: -t --host_tags <STR> "Comma-separated list of tags identifying the hosts to connect to")
-      .required(false)
-    )
-    .arg(
-      arg!(cmd: [COMMAND] "Command to run on each host")
-      .last(true)
-      .required(true)
-    )
-    .get_matches();
-
-  let cmd = get_command(matches.values_of("cmd"));
+pub fn run(matches: ArgMatches) -> Result<()> {
   let inventory = get_inventory(matches.value_of("inventory"))?;
   let hosts = get_host_list(
     inventory,
@@ -37,14 +19,17 @@ pub fn parse_args() -> Result<(Vec<Host>, String)> {
     matches.value_of("host_tags"),
   );
 
-  return Ok((hosts, cmd));
-}
-
-fn get_command(arg: Option<clap::Values<'_>>) -> String {
-  arg
-    .map(|vals| vals.collect::<Vec<_>>())
-    .map(|argv| shell_words::join(argv))
-    .unwrap()
+  match matches.subcommand() {
+    Some(("do", sub_matches)) => {
+      exec::run(hosts, sub_matches)
+    },
+    Some(("info", sub_matches)) => {
+      info::run(hosts, sub_matches)
+    },
+    _ => {
+      unreachable!("Exhausted list of subcommands and subcommand_required prevents `None`")
+    }
+  }
 }
 
 fn get_inventory(arg: Option<&str>) -> Result<Inventory> {
@@ -108,5 +93,5 @@ fn get_host_list(
     return inventory.get_hosts_by_tags(tags);
   }
 
-  return inventory.hosts;
+  return inventory.hosts.clone();
 }
