@@ -5,6 +5,8 @@ fn main() -> Result<()> {
   let matches = command!()
     .propagate_version(true)
     .subcommand_required(true)
+    .allow_external_subcommands(true)
+    .allow_invalid_utf8_for_external_subcommands(true)
     .arg(
       arg!(inventory: -i --inventory <FILE> "Path to TOML inventory file or program producing JSON inventory")
       .required(false)
