@@ -2,6 +2,11 @@
 
 Automation the [KISS](https://en.wikipedia.org/wiki/KISS_principle) way.
 
+![Crates.io](https://img.shields.io/crates/v/tricorder?style=flat-square)
+![Crates.io](https://img.shields.io/crates/l/tricorder?style=flat-square)
+![Crates.io](https://img.shields.io/crates/d/tricorder?style=flat-square)
+![docs.rs](https://img.shields.io/docsrs/tricorder?style=flat-square)
+
 ## Introduction
 
 [Ansible](https://ansible.com) is a great tool for automation. But it suffers
