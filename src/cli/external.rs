@@ -11,7 +11,7 @@
 //! Internally, calling `tricorder [global-options...] SUBCOMMAND [options...]`
 //! would be similar to:
 //!
-//! ```
+//! ```shell
 //! $ export TRICORDER_INVENTORY="..."
 //! $ export TRICORDER_HOST_ID="..."
 //! $ export TRICORDER_HOST_TAGS="..."

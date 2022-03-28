@@ -2,7 +2,7 @@
 //!
 //! Usage:
 //!
-//! ```
+//! ```shell
 //! $ tricorder -i inventory upload LOCAL_PATH REMOTE_PATH [FILE_MODE]
 //! $ tricorder -i inventory upload -T LOCAL_PATH REMOTE_PATH [FILE_MODE]
 //! ```

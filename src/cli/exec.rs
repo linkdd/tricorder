@@ -2,7 +2,7 @@
 //!
 //! Usage:
 //!
-//! ```
+//! ```shell
 //! $ tricorder -i inventory do -- echo "run on all hosts"
 //! $ tricorder -i inventory -H foo do -- echo "run only on host 'foo'"
 //! $ tricorder -i inventory -t myapp do -- echo "run only on hosts tagged with 'myapp'"
@@ -31,7 +31,7 @@
 //! Commands can be templated with data from the host as defined in the
 //! inventory:
 //!
-//! ```
+//! ```shell
 //! $ tricorder -i inventory do -- echo "{host.id} says {host.vars.msg}"
 //! ```
 
