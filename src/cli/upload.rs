@@ -7,6 +7,22 @@
 //! $ tricorder -i inventory upload -T LOCAL_PATH REMOTE_PATH [FILE_MODE]
 //! ```
 //!
+//! This will produce the following output:
+//!
+//! ```json
+//! [
+//!   {
+//!     "host": "example-0",
+//!     "success": true
+//!   },
+//!   {
+//!     "host": "example-1",
+//!     "success": false,
+//!     "error": "..."
+//!   }
+//! ]
+//! ```
+//!
 //! If not provided, `FILE_MODE` defaults to `0644`.
 //!
 //! The following options are available:
