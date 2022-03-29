@@ -33,13 +33,6 @@
 //! with any scripting language or programming language of your choice, instead
 //! of forcing you to develop in a sub-par custom YAML DSL.
 
-pub mod inventory;
-pub mod host;
+pub mod core;
+pub mod tasks;
 pub mod cli;
-
-pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-
-pub use self::{
-  inventory::Inventory,
-  host::Host,
-};

@@ -10,8 +10,9 @@ homepage = "https://github.com/linkdd/tricorder"
 repository = "https://github.com/linkdd/tricorder"
 
 license = "MIT"
-license-file = "LICENSE.txt"
 readme = "README.md"
+
+exclude = ["examples/"]
 
 edition = "2021"
 

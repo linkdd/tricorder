@@ -1,4 +1,4 @@
-use tricorder::{Result, cli};
+use tricorder::{core::Result, cli};
 use clap::{command, arg, Command};
 
 fn main() -> Result<()> {
@@ -48,6 +48,14 @@ fn main() -> Result<()> {
         )
         .arg(
           arg!(file_mode: [MODE] "UNIX file mode to set on the uploaded file (default: 0644)")
+        )
+    )
+    .subcommand(
+      Command::new("download")
+        .about("Download a file from multiple hosts")
+        .arg(
+          arg!(remote_path: [REMOTE_PATH] "Path to the file on the remote host")
+          .required(true)
         )
     )
     .get_matches();

@@ -2,10 +2,10 @@
 
 Automation the [KISS](https://en.wikipedia.org/wiki/KISS_principle) way.
 
-![Crates.io](https://img.shields.io/crates/v/tricorder?style=flat-square)
-![Crates.io](https://img.shields.io/crates/l/tricorder?style=flat-square)
-![Crates.io](https://img.shields.io/crates/d/tricorder?style=flat-square)
-![docs.rs](https://img.shields.io/docsrs/tricorder?style=flat-square)
+[![Crates.io](https://img.shields.io/crates/v/tricorder?style=flat-square)](https://crates.io/crates/tricorder)
+[![Crates.io](https://img.shields.io/crates/l/tricorder?style=flat-square)](https://crates.io/crates/tricorder)
+[![Crates.io](https://img.shields.io/crates/d/tricorder?style=flat-square)](https://crates.io/crates/tricorder)
+[![docs.rs](https://img.shields.io/docsrs/tricorder?style=flat-square)](https://docs.rs/tricorder)
 
 ## Introduction
 
@@ -84,6 +84,32 @@ is written as a JSON document on `stdout`:
 
 This way, you can compose this tool with `jq` to extract the relevant informations
 in your scripts.
+
+## Usage with the Rust API
+
+**tricorder** is also available as a Rust crate to include it directly in your
+software:
+
+```rust
+use tricorder::core::{Inventory, Host};
+use tricorder::tasks::{TaskRunner, exec};
+use serde_json::json;
+
+let inventory = Inventory::new()
+  .add_host(
+    Host::new("localhost", "localhost:22")
+      .set_user("root")
+      .add_tag("local")
+      .set_var("msg", json!("hello"))
+  );
+
+let task = exec::Task::new("echo \"{host.id} says {host.vars.msg}\"");
+let result = inventory.hosts.run_task_seq(&task).unwrap();
+
+println!("{}", result);
+```
+
+## Documentation
 
 For more informations, consult the [documentation](https://docs.rs/tricorder).
 
