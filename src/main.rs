@@ -22,10 +22,16 @@ fn main() -> Result<()> {
     .subcommand(
       Command::new("info")
         .about("Gather information about hosts in the inventory")
+        .arg(
+          arg!(parallel: -p --parallel "If set, the task will be executed concurrently")
+        )
     )
     .subcommand(
       Command::new("do")
         .about("Execute a command on multiple hosts")
+        .arg(
+          arg!(parallel: -p --parallel "If set, the task will be executed concurrently")
+        )
         .arg(
           arg!(cmd: [COMMAND] "Command to run on each host")
           .last(true)
@@ -35,6 +41,9 @@ fn main() -> Result<()> {
     .subcommand(
       Command::new("upload")
         .about("Upload a file to multiple hosts")
+        .arg(
+          arg!(parallel: -p --parallel "If set, the task will be executed concurrently")
+        )
         .arg(
           arg!(template: -T --template "If set, the file is a template with the current host as context data")
         )
@@ -53,6 +62,9 @@ fn main() -> Result<()> {
     .subcommand(
       Command::new("download")
         .about("Download a file from multiple hosts")
+        .arg(
+          arg!(parallel: -p --parallel "If set, the task will be executed concurrently")
+        )
         .arg(
           arg!(remote_path: [REMOTE_PATH] "Path to the file on the remote host")
           .required(true)
