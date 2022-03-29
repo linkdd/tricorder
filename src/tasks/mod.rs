@@ -19,10 +19,6 @@ pub trait Task<Data> {
 
 /// TaskRunner trait to extend the `Vec<Host>` type.
 pub trait TaskRunner {
-  fn run_task_seq<Data>(&self, task: &dyn Task<Data>) -> TaskResult;
-}
-
-impl TaskRunner for Vec<Host> {
   /// Run a task sequentially on multiple hosts.
   ///
   /// This function first calls the `prepare()` method for all hosts. All should
@@ -30,6 +26,10 @@ impl TaskRunner for Vec<Host> {
   ///
   /// Once the task is prepared for all hosts, this function calls the `apply()`
   /// method with the contextual data produce at the previous step.
+  fn run_task_seq<Data>(&self, task: &dyn Task<Data>) -> TaskResult;
+}
+
+impl TaskRunner for Vec<Host> {
   fn run_task_seq<Data>(&self, task: &dyn Task<Data>) -> TaskResult {
     let results: Vec<Value> = self
       .into_iter()
@@ -63,3 +63,4 @@ impl TaskRunner for Vec<Host> {
 pub mod exec;
 pub mod info;
 pub mod upload;
+pub mod download;

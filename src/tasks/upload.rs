@@ -9,15 +9,15 @@
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new("localhost", "localhost:22")
-//!       .set_user("root")
-//!       .add_tag("local")
+//!     Host::new("localhost".to_string(), "localhost:22".to_string())
+//!       .set_user("root".to_string())
+//!       .add_tag("local".to_string())
 //!       .set_var("msg", json!("hello"))
 //!   );
 //!
 //! let task = upload::Task::new_template(
-//!   "/path/to/local/file.ext",
-//!   "/path/to/remote/file.ext",
+//!   "/path/to/local/file.ext".to_string(),
+//!   "/path/to/remote/file.ext".to_string(),
 //!   0o644
 //! );
 //! let result = inventory.hosts.run_task_seq(&task).unwrap();
@@ -42,7 +42,7 @@
 //! ]
 //! ```
 
-use crate::core::{Result, Host};
+use crate::core::{Result, Error, Host};
 use super::{Task as TaskTrait, TaskResult};
 
 use tinytemplate::{TinyTemplate, format_unescaped};
@@ -98,6 +98,19 @@ pub enum TaskContext {
 
 impl TaskTrait<TaskContext> for Task {
   fn prepare(&self, host: Host) -> Result<TaskContext> {
+    let local_path = Path::new(self.local_path.as_str());
+
+    if !local_path.exists() {
+      return Err(Box::new(Error::FileNotFound(
+        format!("No such file: {}", self.local_path)
+      )))
+    }
+    else if local_path.is_dir() {
+      return Err(Box::new(Error::IsADirectory(
+        format!("Path is a directory, not a file: {}", self.local_path)
+      )))
+    }
+
     if self.is_template {
       let template = fs::read_to_string(self.local_path.clone())?;
 
@@ -112,7 +125,7 @@ impl TaskTrait<TaskContext> for Task {
       Ok(TaskContext::Template { content, file_size })
     }
     else {
-      let file_size = fs::metadata(&self.local_path)?.len();
+      let file_size = local_path.metadata()?.len();
 
       Ok(TaskContext::File { file_size })
     }

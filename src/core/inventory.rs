@@ -1,5 +1,12 @@
-use crate::core::{Result, Host};
+use crate::core::{Result, Error, Host};
 use serde_derive::{Serialize, Deserialize};
+
+use is_executable::IsExecutable;
+use std::{
+  fs,
+  path::Path,
+  process::Command,
+};
 
 /// Abstraction of inventory file
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -51,6 +58,36 @@ impl Inventory {
   pub fn from_json(content: &str) -> Result<Self> {
     let inventory: Self = serde_json::from_str(content)?;
     Ok(inventory)
+  }
+
+  /// Parse inventory from a file or executable
+  pub fn from_file(path: &str) -> Result<Self> {
+    let inventory_path = Path::new(path);
+
+    if inventory_path.exists() {
+      if inventory_path.is_executable() {
+        let result = Command::new(path).output()?;
+
+        if !result.status.success() {
+          Err(Box::new(Error::CommandExecutionFailed(
+            format!("Failed to execute inventory {}: {}", path, result.status)
+          )))
+        }
+        else {
+          let content = String::from_utf8(result.stdout)?;
+          Ok(Inventory::from_json(&content)?)
+        }
+      }
+      else {
+        let content = fs::read_to_string(path)?;
+        Ok(Inventory::from_toml(&content)?)
+      }
+    }
+    else {
+      Err(Box::new(Error::FileNotFound(
+        format!("Inventory '{}' does not exist", path)
+      )))
+    }
   }
 
   /// Add host to the inventory.
