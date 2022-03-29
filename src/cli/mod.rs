@@ -25,12 +25,6 @@ pub mod upload;
 use crate::core::{Result, Inventory, Host};
 
 use clap::ArgMatches;
-use is_executable::IsExecutable;
-use std::{
-  path::Path,
-  process::Command,
-  fs
-};
 
 pub fn run(matches: ArgMatches) -> Result<()> {
   let inventory_arg = matches.value_of("inventory");
@@ -39,17 +33,17 @@ pub fn run(matches: ArgMatches) -> Result<()> {
 
   match matches.subcommand() {
     Some(("info", sub_matches)) => {
-      let inventory = get_inventory(inventory_arg)?;
+      let inventory = get_inventory(inventory_arg);
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       info::run(hosts, sub_matches)
     },
     Some(("do", sub_matches)) => {
-      let inventory = get_inventory(inventory_arg)?;
+      let inventory = get_inventory(inventory_arg);
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       exec::run(hosts, sub_matches)
     },
     Some(("upload", sub_matches)) => {
-      let inventory = get_inventory(inventory_arg)?;
+      let inventory = get_inventory(inventory_arg);
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       upload::run(hosts, sub_matches)
     },
@@ -62,38 +56,22 @@ pub fn run(matches: ArgMatches) -> Result<()> {
   }
 }
 
-fn get_inventory(arg: Option<&str>) -> Result<Inventory> {
+fn get_inventory(arg: Option<&str>) -> Inventory {
   match arg {
     Some(path) => {
-      let inventory_path = Path::new(path);
-
-      if inventory_path.exists() {
-        if inventory_path.is_executable() {
-          let result = Command::new(path).output()?;
-
-          if !result.status.success() {
-            eprintln!("Failed to execute inventory {}: {}", path, result.status);
-            eprintln!("Ignoring...");
-            Ok(Inventory::new())
-          }
-          else {
-            let content = String::from_utf8(result.stdout)?;
-            Ok(Inventory::from_json(&content)?)
-          }
+      match Inventory::from_file(path) {
+        Ok(inventory) => {
+          inventory
+        },
+        Err(err) => {
+          eprintln!("{}, ignoring...", err);
+          Inventory::new()
         }
-        else {
-          let content = fs::read_to_string(path)?;
-          Ok(Inventory::from_toml(&content)?)
-        }
-      }
-      else {
-        eprintln!("Inventory '{}' does not exist, ignoring...", path);
-        Ok(Inventory::new())
       }
     },
     None => {
-      eprintln!("No inventory provided, using localhost...");
-      Ok(Inventory::new())
+      eprintln!("No inventory provided, using empty inventory...");
+      Inventory::new()
     }
   }
 }
