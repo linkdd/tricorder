@@ -57,6 +57,10 @@ fn main() -> Result<()> {
           arg!(remote_path: [REMOTE_PATH] "Path to the file on the remote host")
           .required(true)
         )
+        .arg(
+          arg!(local_path: [LOCAL_PATH] "Path to the destination on local machine")
+          .required(true)
+        )
     )
     .get_matches();
 

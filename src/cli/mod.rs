@@ -21,6 +21,7 @@ pub mod external;
 pub mod info;
 pub mod exec;
 pub mod upload;
+pub mod download;
 
 use crate::core::{Result, Inventory, Host};
 
@@ -46,6 +47,11 @@ pub fn run(matches: ArgMatches) -> Result<()> {
       let inventory = get_inventory(inventory_arg);
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
       upload::run(hosts, sub_matches)
+    },
+    Some(("download", sub_matches)) => {
+      let inventory = get_inventory(inventory_arg);
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
+      download::run(hosts, sub_matches)
     },
     Some((cmd, sub_matches)) => {
       external::run(cmd, inventory_arg, host_id_arg, host_tags_arg, sub_matches)
