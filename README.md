@@ -115,7 +115,7 @@ For more informations, consult the [documentation](https://docs.rs/tricorder).
 
 ## Roadmap
 
-Checkout the [Bug Tracker](https://github.com/linkdd/tricorder/issues).
+Checkout the [Bug Tracker](https://github.com/linkdd/tricorder/milestones).
 
 ## License
 
