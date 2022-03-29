@@ -12,6 +12,8 @@ repository = "https://github.com/linkdd/tricorder"
 license = "MIT"
 readme = "README.md"
 
+exclude = ["examples/"]
+
 edition = "2021"
 
 [dependencies]

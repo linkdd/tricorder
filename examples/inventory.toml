@@ -1,0 +1,7 @@
+[[hosts]]
+
+id = "localhost"
+address = "localhost:22"
+user = "root"
+tags = ["local"]
+vars = { msg = "hi" }
