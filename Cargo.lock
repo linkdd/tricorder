@@ -456,7 +456,7 @@ dependencies = [
 
 [[package]]
 name = "tricorder"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "clap",
  "file-mode",
