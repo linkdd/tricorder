@@ -59,6 +59,14 @@ $ tricorder -i /path/to/inventory -H backend do -- echo "run on specific host"
 $ tricorder -i /path/to/inventory -t server,myapp do -- echo "run on all hosts matching tags"
 ```
 
+Or to run concurrently instead of sequencially:
+
+```
+$ tricorder -i /path/to/inventory do -p -- echo "run on all hosts"
+$ tricorder -i /path/to/inventory -H backend do -p -- echo "run on specific host"
+$ tricorder -i /path/to/inventory -t server,myapp do -p -- echo "run on all hosts matching tags"
+```
+
 > **NB:** Authentication is done via `ssh-agent` only.
 
 Every logging messages is written on `stderr`, the command result for each host
@@ -104,7 +112,11 @@ let inventory = Inventory::new()
   );
 
 let task = exec::Task::new("echo \"{host.id} says {host.vars.msg}\"".to_string());
+
+// Run the task sequentially:
 let result = inventory.hosts.run_task_seq(&task).unwrap();
+// Run the task concurrently:
+let result = inventory.hosts.run_task_parallel(&task).unwrap();
 
 println!("{}", result);
 ```

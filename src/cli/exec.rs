@@ -22,8 +22,10 @@ use clap::ArgMatches;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
   let cmd_tmpl = get_command(matches.values_of("cmd"));
+  let parallel = matches.is_present("parallel");
+
   let task = exec::Task::new(cmd_tmpl);
-  let res = hosts.run_task_seq(&task)?;
+  let res = hosts.run_task(&task, parallel)?;
   println!("{}", res);
 
   Ok(())
