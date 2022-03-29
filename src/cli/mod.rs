@@ -22,7 +22,7 @@ pub mod info;
 pub mod exec;
 pub mod upload;
 
-use crate::{Result, Inventory, Host};
+use crate::core::{Result, Inventory, Host};
 
 use clap::ArgMatches;
 use is_executable::IsExecutable;
