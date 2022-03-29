@@ -23,8 +23,8 @@ use file_mode::Mode;
 use std::convert::TryFrom;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
-  let local_path = get_local_path(matches.value_of("local_path"))?;
-  let remote_path = get_remote_path(matches.value_of("remote_path"))?;
+  let local_path = get_path(matches.value_of("local_path"))?;
+  let remote_path = get_path(matches.value_of("remote_path"))?;
   let file_mode = get_file_mode(matches.value_of("file_mode"))?;
 
   let task = if matches.is_present("template") {
@@ -40,18 +40,7 @@ pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
   Ok(())
 }
 
-fn get_local_path(arg: Option<&str>) -> Result<String> {
-  if let Some(path) = arg {
-    Ok(String::from(path))
-  }
-  else {
-    Err(Box::new(Error::MissingInput(
-      "No input file provided".to_string(),
-    )))
-  }
-}
-
-fn get_remote_path(arg: Option<&str>) -> Result<String> {
+fn get_path(arg: Option<&str>) -> Result<String> {
   if let Some(path) = arg {
     Ok(String::from(path))
   }
