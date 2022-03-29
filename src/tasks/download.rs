@@ -90,16 +90,11 @@ impl TaskTrait<String> for Task {
 
   fn apply(&self, host: Host, local_path: String) -> TaskResult {
     let sess = host.get_session()?;
-    let (mut channel, _) = sess.scp_recv(Path::new(&self.remote_path))?;
+    let sftp = sess.sftp()?;
 
-    let mut remote_file_stream = channel.stream(1);
+    let mut remote_file = sftp.open(Path::new(&self.remote_path))?;
     let mut local_file = fs::File::create(&local_path)?;
-    let size = io::copy(&mut remote_file_stream, &mut local_file)?;
-
-    channel.send_eof()?;
-    channel.wait_eof()?;
-    channel.close()?;
-    channel.wait_close()?;
+    let size = io::copy(&mut remote_file, &mut local_file)?;
 
     Ok(json!({
       "file_path": local_path,
