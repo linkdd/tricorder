@@ -63,3 +63,4 @@ impl TaskRunner for Vec<Host> {
 pub mod exec;
 pub mod info;
 pub mod upload;
+pub mod download;
