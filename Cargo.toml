@@ -23,6 +23,8 @@ serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
 
+rayon = "1.5"
+
 clap = { version = "3.1", features = ["cargo"] }
 ssh2 = "0.9"
 is_executable = "1.0"
