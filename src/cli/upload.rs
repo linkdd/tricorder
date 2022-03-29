@@ -15,17 +15,12 @@
 //! | --- | --- |
 //! | `-T, --template` | If set, treats `LOCAL_PATH` as a template with the current host as input data. |
 
-use crate::core::{Result, Host};
+use crate::core::{Result, Error, Host};
 use crate::tasks::{TaskRunner, upload};
 
 use clap::ArgMatches;
 use file_mode::Mode;
-
-use std::{
-  convert::TryFrom,
-  io::{Error, ErrorKind},
-  path::Path,
-};
+use std::convert::TryFrom;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
   let local_path = get_local_path(matches.value_of("local_path"))?;
@@ -47,28 +42,11 @@ pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
 
 fn get_local_path(arg: Option<&str>) -> Result<String> {
   if let Some(path) = arg {
-    let local_path = Path::new(path);
-
-    if !local_path.exists() {
-      Err(Box::new(Error::new(
-        ErrorKind::NotFound,
-        format!("No such file: {}", path),
-      )))
-    }
-    else if local_path.is_dir() {
-      Err(Box::new(Error::new(
-        ErrorKind::InvalidInput,
-        format!("Path is a directory, not a file: {}", path),
-      )))
-    }
-    else {
-      Ok(String::from(path))
-    }
+    Ok(String::from(path))
   }
   else {
-    Err(Box::new(Error::new(
-      ErrorKind::Other,
-      "No input file provided",
+    Err(Box::new(Error::MissingInput(
+      "No input file provided".to_string(),
     )))
   }
 }
@@ -78,9 +56,8 @@ fn get_remote_path(arg: Option<&str>) -> Result<String> {
     Ok(String::from(path))
   }
   else {
-    Err(Box::new(Error::new(
-      ErrorKind::Other,
-      "No input file provided",
+    Err(Box::new(Error::MissingInput(
+      "No input file provided".to_string(),
     )))
   }
 }
