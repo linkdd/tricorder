@@ -26,6 +26,7 @@ pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
   let local_path = get_path(matches.value_of("local_path"))?;
   let remote_path = get_path(matches.value_of("remote_path"))?;
   let file_mode = get_file_mode(matches.value_of("file_mode"))?;
+  let parallel = matches.is_present("parallel");
 
   let task = if matches.is_present("template") {
     upload::Task::new_template(local_path, remote_path, file_mode)
@@ -34,7 +35,7 @@ pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
     upload::Task::new_file(local_path, remote_path, file_mode)
   };
 
-  let res = hosts.run_task_seq(&task)?;
+  let res = hosts.run_task(&task, parallel)?;
   println!("{}", res);
 
   Ok(())

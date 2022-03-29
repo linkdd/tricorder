@@ -11,9 +11,11 @@ use crate::tasks::{TaskRunner, info};
 
 use clap::ArgMatches;
 
-pub fn run(hosts: Vec<Host>, _matches: &ArgMatches) -> Result<()> {
+pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
+  let parallel = matches.is_present("parallel");
+
   let task = info::Task::new();
-  let res = hosts.run_task_seq(&task)?;
+  let res = hosts.run_task(&task, parallel)?;
   println!("{}", res);
 
   Ok(())
