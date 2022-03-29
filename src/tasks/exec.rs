@@ -9,13 +9,13 @@
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new("localhost", "localhost:22")
-//!       .set_user("root")
-//!       .add_tag("local")
+//!     Host::new("localhost".to_string(), "localhost:22".to_string())
+//!       .set_user("root".to_string())
+//!       .add_tag("local".to_string())
 //!       .set_var("msg", json!("hello"))
 //!   );
 //!
-//! let task = exec::Task::new("echo \"{host.id} says {host.vars.msg}\"");
+//! let task = exec::Task::new("echo \"{host.id} says {host.vars.msg}\"".to_string());
 //! let result = inventory.hosts.run_task_seq(&task).unwrap();
 //! ```
 //!
