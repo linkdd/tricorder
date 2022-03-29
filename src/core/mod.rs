@@ -45,11 +45,13 @@
 //! ```
 
 mod result;
+mod error;
 mod inventory;
 mod host;
 
 pub use self::{
   result::Result,
+  error::Error,
   inventory::Inventory,
   host::Host,
 };
