@@ -10,7 +10,7 @@
 //! | --- | --- |
 //! | `-i, --inventory <PATH>` | Path to a TOML inventory file or an executable producing a JSON inventory |
 //! | `-H, --host_id <STR>` | Specific host on which to perform the task |
-//! | `-t, --host_tags <STR>` | Comma-separated list of tags to select the hosts |
+//! | `-t, --host_tags <STR>` | Boolean tag expression to select the hosts (example: `foo & !(bar | baz)`) |
 //!
 //! > **NB:**
 //! >   - If `-H` is provided, `-t` will be ignored.
@@ -101,11 +101,7 @@ fn get_host_list(
   }
 
   if let Some(host_tags) = host_tags_arg {
-    let tags = host_tags.split(",")
-      .map(|tag| HostTag::new(tag.trim()))
-      .collect::<Result<Vec<HostTag>>>()?;
-
-    return Ok(inventory.get_hosts_by_tags(tags));
+    return Ok(inventory.get_hosts_by_tags(host_tags.to_string())?);
   }
 
   return Ok(inventory.hosts.clone());

@@ -1,4 +1,4 @@
-use crate::core::{Result, Error, Host, HostId, HostTag};
+use crate::core::{Result, Error, Host, HostId, eval_tag_expr};
 use serde_derive::{Serialize, Deserialize};
 
 use is_executable::IsExecutable;
@@ -110,21 +110,18 @@ impl Inventory {
       .map(|host| host.clone())
   }
 
-  /// Get a list of host matching at least on of the provided tags.
-  pub fn get_hosts_by_tags(&self, tags: Vec<HostTag>) -> Vec<Host> {
-    self.hosts
-      .iter()
-      .filter(|host| {
-        for tag in tags.iter() {
-          if host.tags.contains(tag) {
-            return true
-          }
-        }
+  /// Get a list of host matching the tag expression.
+  pub fn get_hosts_by_tags(&self, tag_expr: String) -> Result<Vec<Host>> {
+    let mut hosts = vec![];
 
-        return false
-      })
-      .map(|host| host.clone())
-      .collect()
+    for host in self.hosts.iter() {
+      let tags = host.tags.iter().map(|tag| tag.clone().to_string()).collect();
+      if eval_tag_expr(&tag_expr, tags)? {
+        hosts.push(host.clone());
+      }
+    }
+
+    Ok(hosts)
   }
 }
 
