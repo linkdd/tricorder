@@ -3,15 +3,15 @@
 //! Example usage:
 //!
 //! ```no_run
-//! use tricorder::prelude::{Inventory, Host, HostId, HostTag};
-//! use tricorder::tasks::{TaskRunner, upload};
+//! use tricorder::prelude::*;
+//! use tricorder::tasks::upload;
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
+//!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
 //!       .set_user("root".to_string())
-//!       .add_tag(HostTag::new("local").unwrap())
+//!       .add_tag(Host::tag("local").unwrap())
 //!       .set_var("msg".to_string(), json!("hello"))
 //!       .to_owned()
 //!   )
@@ -44,8 +44,7 @@
 //! ]
 //! ```
 
-use crate::prelude::{Result, Error, Host};
-use super::{Task as TaskTrait, TaskResult};
+use crate::prelude::*;
 
 use tinytemplate::{TinyTemplate, format_unescaped};
 use serde_json::json;
@@ -98,7 +97,7 @@ pub enum TaskContext {
   File { file_size: u64 },
 }
 
-impl TaskTrait<TaskContext> for Task {
+impl GenericTask<TaskContext> for Task {
   fn prepare(&self, host: Host) -> Result<TaskContext> {
     let local_path = Path::new(self.local_path.as_str());
 

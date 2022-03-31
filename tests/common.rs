@@ -1,2 +1,2 @@
-#[path = "core/mod.rs"]
-mod core;
+#[path = "prelude/mod.rs"]
+mod prelude;

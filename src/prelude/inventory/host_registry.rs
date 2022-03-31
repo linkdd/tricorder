@@ -1,4 +1,10 @@
-use crate::prelude::{Result, Error, Host, HostId, eval_tag_expr};
+use crate::prelude::{Result, Error};
+use super::{
+  host_entry::Host,
+  host_id::HostId,
+  tag_expr::eval_tag_expr,
+};
+
 use serde_derive::{Serialize, Deserialize};
 
 use is_executable::IsExecutable;

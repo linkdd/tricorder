@@ -1,4 +1,4 @@
-use tricorder::prelude::{Inventory, Host, HostId, HostTag};
+use tricorder::prelude::{Inventory, Host};
 
 #[test]
 fn new_should_create_an_empty_inventory() {
@@ -11,13 +11,13 @@ fn new_should_create_an_empty_inventory() {
 fn add_host_should_work() {
   let inventory = Inventory::new()
     .add_host(
-      Host::new(HostId::new("example-0").unwrap(), "127.0.1.1:22".to_string())
+      Host::new(Host::id("example-0").unwrap(), "127.0.1.1:22".to_string())
     )
     .to_owned();
 
   assert_eq!(inventory.hosts.len(), 1);
 
-  let host = inventory.get_host_by_id(HostId::new("example-0").unwrap())
+  let host = inventory.get_host_by_id(Host::id("example-0").unwrap())
     .expect("host example-0 should exist");
 
   assert_eq!(host.address, String::from("127.0.1.1:22"));
@@ -27,17 +27,17 @@ fn add_host_should_work() {
 fn remove_host_should_work() {
   let inventory = Inventory::new()
     .add_host(
-      Host::new(HostId::new("example-0").unwrap(), "127.0.1.1:22".to_string())
+      Host::new(Host::id("example-0").unwrap(), "127.0.1.1:22".to_string())
     )
     .add_host(
-      Host::new(HostId::new("example-1").unwrap(), "127.0.1.2:22".to_string())
+      Host::new(Host::id("example-1").unwrap(), "127.0.1.2:22".to_string())
     )
-    .remove_host(HostId::new("example-1").unwrap())
+    .remove_host(Host::id("example-1").unwrap())
     .to_owned();
 
   assert_eq!(inventory.hosts.len(), 1);
 
-  let host = inventory.get_host_by_id(HostId::new("example-0").unwrap())
+  let host = inventory.get_host_by_id(Host::id("example-0").unwrap())
     .expect("host example-0 should exist");
 
   assert_eq!(host.address, String::from("127.0.1.1:22"));
@@ -56,7 +56,7 @@ fn from_toml_should_return_an_inventory() {
     Ok(inventory) => {
       assert_eq!(inventory.hosts.len(), 1);
 
-      let host = inventory.get_host_by_id(HostId::new("example-0").unwrap())
+      let host = inventory.get_host_by_id(Host::id("example-0").unwrap())
         .expect("host example-0 should exist");
 
       assert_eq!(host.address, String::from("127.0.1.1:22"));
@@ -123,7 +123,7 @@ fn from_json_should_return_an_inventory() {
     Ok(inventory) => {
       assert_eq!(inventory.hosts.len(), 1);
 
-      let host = inventory.get_host_by_id(HostId::new("example-0").unwrap())
+      let host = inventory.get_host_by_id(Host::id("example-0").unwrap())
         .expect("host example-0 should exist");
 
       assert_eq!(host.address, String::from("127.0.1.1:22"));
@@ -183,13 +183,13 @@ fn from_json_should_fail_on_invalid_hosttag() {
 fn get_host_by_tags_should_work() {
   let inventory = Inventory::new()
     .add_host(
-      Host::new(HostId::new("example-0").unwrap(), "127.0.1.1:22".to_string())
-        .add_tag(HostTag::new("foo").unwrap())
+      Host::new(Host::id("example-0").unwrap(), "127.0.1.1:22".to_string())
+        .add_tag(Host::tag("foo").unwrap())
         .to_owned()
     )
     .add_host(
-      Host::new(HostId::new("example-1").unwrap(), "127.0.1.2:22".to_string())
-      .add_tag(HostTag::new("bar").unwrap())
+      Host::new(Host::id("example-1").unwrap(), "127.0.1.2:22".to_string())
+      .add_tag(Host::tag("bar").unwrap())
       .to_owned()
     )
     .to_owned();
@@ -202,7 +202,7 @@ fn get_host_by_tags_should_work() {
   assert_eq!(foo_hosts.len(), 1);
   match foo_hosts.get(0) {
     Some(host) => {
-      assert_eq!(host.id, HostId::new("example-0").unwrap());
+      assert_eq!(host.id, Host::id("example-0").unwrap());
     },
     None => {
       assert!(false, "Expected host example-0 not found");
@@ -212,7 +212,7 @@ fn get_host_by_tags_should_work() {
   assert_eq!(bar_hosts.len(), 1);
   match bar_hosts.get(0) {
     Some(host) => {
-      assert_eq!(host.id, HostId::new("example-1").unwrap());
+      assert_eq!(host.id, Host::id("example-1").unwrap());
     },
     None => {
       assert!(false, "Expected host example-1 not found");

@@ -32,14 +32,14 @@
 //! Or directly via the Rust API:
 //!
 //! ```rust
-//! use tricorder::prelude::{Inventory, Host, HostId, HostTag};
+//! use tricorder::prelude::{Inventory, Host};
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
+//!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
 //!       .set_user("root".to_string())
-//!       .add_tag(HostTag::new("local").unwrap())
+//!       .add_tag(Host::tag("local").unwrap())
 //!       .set_var("foo".to_string(), json!("bar"))
 //!       .to_owned()
 //!   )
@@ -48,14 +48,12 @@
 
 mod result;
 mod error;
-mod tags;
 mod inventory;
-mod host;
+mod tasks;
 
 pub use self::{
   result::Result,
   error::Error,
-  tags::eval_tag_expr,
-  inventory::Inventory,
-  host::{Host, HostId, HostTag},
+  inventory::*,
+  tasks::*,
 };
