@@ -2,20 +2,22 @@
 //!
 //! Example usage:
 //!
-//! ```rust
-//! use tricorder::core::{Inventory, Host};
+//! ```no_run
+//! use tricorder::core::{Inventory, Host, HostId, HostTag};
 //! use tricorder::tasks::{TaskRunner, download};
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new("localhost".to_string(), "localhost:22".to_string())
+//!     Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
 //!       .set_user("root".to_string())
-//!       .add_tag("local".to_string())
-//!       .set_var("msg", json!("hello"))
-//!   );
+//!       .add_tag(HostTag::new("local").unwrap())
+//!       .set_var("msg".to_string(), json!("hello"))
+//!       .to_owned()
+//!   )
+//!   .to_owned();
 //!
-//! let task = download::Task::new_template(
+//! let task = download::Task::new(
 //!   "/path/to/remote/file.ext".to_string(),
 //!   "file.ext".to_string(),
 //! );
@@ -81,7 +83,7 @@ impl TaskTrait<String> for Task {
     }
 
     let cwd = env::current_dir()?;
-    let fullpath = cwd.join(host.id).join(local_path);
+    let fullpath = cwd.join(host.id.to_string()).join(local_path);
     let fulldir = fullpath.parent().unwrap();
     fs::create_dir_all(fulldir)?;
 
