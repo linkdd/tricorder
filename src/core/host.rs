@@ -1,20 +1,29 @@
-use super::Result;
+use super::{Result, Error};
 
 use ssh2::Session;
 
 use serde_json::Value;
 use serde_derive::{Serialize, Deserialize};
+use regex::Regex;
 
 use std::{
   collections::HashMap,
   net::TcpStream,
 };
 
+const HOST_ID_REGEX: &str = r"^[a-zA-Z0-9_][a-zA-Z0-9_\-]*$";
+const HOST_TAG_REGEX: &str = r"^[^!\&\|\t\n\r\f ]+$";
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct HostId(String);
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct HostTag(String);
+
 /// Abstraction of a host found in the inventory
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Host {
   /// Host identifier
-  pub id: String,
+  pub id: HostId,
   /// SSH host address in the form of `hostname:port`
   pub address: String,
   /// SSH user to authenticate with (defaults to `root`)
@@ -22,15 +31,74 @@ pub struct Host {
   pub user: String,
   /// Tags used to apply commands on a subset of hosts from the inventory (defaults to `[]`)
   #[serde(default = "default_tags")]
-  pub tags: Vec<String>,
+  pub tags: Vec<HostTag>,
   /// Variables specific to this host, used by templates (defaults to `{}`)
   #[serde(default = "default_vars")]
   pub vars: HashMap<String, Value>,
 }
 
+impl HostId {
+  /// Create a new host identifier from a string.
+  ///
+  /// Example:
+  ///
+  /// ```rust
+  /// use tricorder::core::HostId;
+  ///
+  /// let id = HostId::new("example").unwrap();
+  /// # assert_eq!(id.to_string(), String::from("example"));
+  /// ```
+  pub fn new(src: &str) -> Result<Self> {
+    let re = Regex::new(HOST_ID_REGEX)?;
+    if !re.is_match(src) {
+      Err(Box::new(Error::InvalidHostId(
+        format!("ID {} does not match regex {}", src, HOST_ID_REGEX)
+      )))
+    }
+    else {
+      Ok(Self(src.to_string()))
+    }
+  }
+
+  /// Return the underlying string
+  pub fn to_string(self) -> String {
+    let Self(s) = self;
+    s.clone()
+  }
+}
+
+impl HostTag {
+  /// Create a new host identifier from a string.
+  ///
+  /// Example:
+  ///
+  /// ```rust
+  /// use tricorder::core::HostTag;
+  ///
+  /// let tag = HostTag::new("example").unwrap();
+  /// # assert_eq!(tag.to_string(), String::from("example"));
+  /// ```
+  pub fn new(src: &str) -> Result<Self> {
+    let re = Regex::new(HOST_TAG_REGEX)?;
+    if !re.is_match(src) {
+      Err(Box::new(Error::InvalidHostTag(
+        format!("Tag {} does not match regex {}", src, HOST_TAG_REGEX)
+      )))
+    }
+    else {
+      Ok(Self(src.to_string()))
+    }
+  }
+
+  pub fn to_string(self) -> String {
+    let Self(s) = self;
+    s
+  }
+}
+
 impl Host {
   /// Create a new host
-  pub fn new(id: String, address: String) -> Self {
+  pub fn new(id: HostId, address: String) -> Self {
     Self {
       id,
       address,
@@ -47,13 +115,13 @@ impl Host {
   }
 
   /// Add tag to this host
-  pub fn add_tag(&mut self, tag: String) -> &mut Self {
+  pub fn add_tag(&mut self, tag: HostTag) -> &mut Self {
     self.tags.push(tag);
     self
   }
 
   /// Remove tag from this host
-  pub fn remove_tag(&mut self, tag: String) -> &mut Self {
+  pub fn remove_tag(&mut self, tag: HostTag) -> &mut Self {
     self.tags.retain(|current_tag| *current_tag != tag);
     self
   }
@@ -87,7 +155,7 @@ fn default_user() -> String {
   String::from("root")
 }
 
-fn default_tags() -> Vec<String> {
+fn default_tags() -> Vec<HostTag> {
   vec![]
 }
 
