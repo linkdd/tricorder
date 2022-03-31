@@ -78,6 +78,37 @@ fn from_toml_should_fail_on_invalid_content() {
 }
 
 #[test]
+fn from_toml_should_fail_on_invalid_hostid() {
+  let content = r#"
+  [[hosts]]
+
+  id = "example-0$"
+  address = "127.0.1.1:22"
+  "#;
+
+  match Inventory::from_toml(content) {
+    Ok(_) => assert!(false, "invalid id should not be parsed"),
+    Err(_) => assert!(true)
+  };
+}
+
+#[test]
+fn from_toml_should_fail_on_invalid_hosttag() {
+  let content = r#"
+  [[hosts]]
+
+  id = "example-0"
+  address = "127.0.1.1:22"
+  tags = ["&foo"]
+  "#;
+
+  match Inventory::from_toml(content) {
+    Ok(_) => assert!(false, "invalid tag should not be parsed"),
+    Err(_) => assert!(true)
+  };
+}
+
+#[test]
 fn from_json_should_return_an_inventory() {
   let content = r#"
   {"hosts": [
@@ -109,6 +140,41 @@ fn from_json_should_fail_on_invalid_content() {
 
   match Inventory::from_json(content) {
     Ok(_) => assert!(false, "invalid JSON should not be parsed"),
+    Err(_) => assert!(true)
+  };
+}
+
+#[test]
+fn from_json_should_fail_on_invalid_hostid() {
+  let content = r#"
+  {"hosts": [
+    {
+      "id": "example-0$",
+      "address": "127.0.1.1:22"
+    }
+  ]}
+  "#;
+
+  match Inventory::from_json(content) {
+    Ok(_) => assert!(false, "invalid id should not be parsed"),
+    Err(_) => assert!(true)
+  };
+}
+
+#[test]
+fn from_json_should_fail_on_invalid_hosttag() {
+  let content = r#"
+  {"hosts": [
+    {
+      "id": "example-0",
+      "address": "127.0.1.1:22",
+      "tags": ["&foo"]
+    }
+  ]}
+  "#;
+
+  match Inventory::from_json(content) {
+    Ok(_) => assert!(false, "invalid tag should not be parsed"),
     Err(_) => assert!(true)
   };
 }
