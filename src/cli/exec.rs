@@ -15,7 +15,7 @@
 //! $ tricorder -i inventory do -- echo "{host.id} says {host.vars.msg}"
 //! ```
 
-use crate::core::{Result, Host};
+use crate::prelude::{Result, Host};
 use crate::tasks::{TaskRunner, exec};
 
 use clap::ArgMatches;

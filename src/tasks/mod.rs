@@ -2,7 +2,7 @@
 //!
 //! A `Task` describe an action that can be done on a `Host`.
 
-use crate::core::{Result, Host};
+use crate::prelude::{Result, Host};
 use serde_json::{json, Value};
 use rayon::prelude::*;
 

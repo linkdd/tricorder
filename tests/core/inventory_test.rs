@@ -1,4 +1,4 @@
-use tricorder::core::{Inventory, Host, HostId, HostTag};
+use tricorder::prelude::{Inventory, Host, HostId, HostTag};
 
 #[test]
 fn new_should_create_an_empty_inventory() {

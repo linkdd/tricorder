@@ -8,7 +8,7 @@
 //!
 //! The files will be downloaded to: `{pwd}/{host.id}/{local_path}`
 
-use crate::core::{Result, Error, Host};
+use crate::prelude::{Result, Error, Host};
 use crate::tasks::{TaskRunner, download};
 
 use clap::ArgMatches;

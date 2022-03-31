@@ -62,7 +62,7 @@ fn parse(input: &str) -> Result<BeTree<BoolOp, String>> {
 /// Example:
 ///
 /// ```rust
-/// use tricorder::core::eval_tag_expr;
+/// use tricorder::prelude::eval_tag_expr;
 ///
 /// let tags = vec!["foo".to_string(), "bar".to_string(), "baz".to_string()];
 /// assert!(eval_tag_expr("foo", tags.clone()).unwrap());

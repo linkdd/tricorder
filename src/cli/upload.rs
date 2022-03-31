@@ -15,7 +15,7 @@
 //! | --- | --- |
 //! | `-T, --template` | If set, treats `LOCAL_PATH` as a template with the current host as input data. |
 
-use crate::core::{Result, Error, Host};
+use crate::prelude::{Result, Error, Host};
 use crate::tasks::{TaskRunner, upload};
 
 use clap::ArgMatches;

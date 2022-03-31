@@ -99,7 +99,7 @@ in your scripts.
 software:
 
 ```rust
-use tricorder::core::{Inventory, Host, HostId, HostTag};
+use tricorder::prelude::{Inventory, Host, HostId, HostTag};
 use tricorder::tasks::{TaskRunner, exec};
 use serde_json::json;
 

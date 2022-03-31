@@ -3,7 +3,7 @@
 //! Example usage:
 //!
 //! ```no_run
-//! use tricorder::core::{Inventory, Host, HostId, HostTag};
+//! use tricorder::prelude::{Inventory, Host, HostId, HostTag};
 //! use tricorder::tasks::{TaskRunner, download};
 //! use serde_json::json;
 //!
@@ -44,7 +44,7 @@
 //! ]
 //! ```
 
-use crate::core::{Result, Error, Host};
+use crate::prelude::{Result, Error, Host};
 use super::{Task as TaskTrait, TaskResult};
 
 use serde_json::json;

@@ -45,7 +45,7 @@ impl HostId {
   /// Example:
   ///
   /// ```rust
-  /// use tricorder::core::HostId;
+  /// use tricorder::prelude::HostId;
   ///
   /// let id = HostId::new("example").unwrap();
   /// # assert_eq!(id.to_string(), String::from("example"));
@@ -93,7 +93,7 @@ impl HostTag {
   /// Example:
   ///
   /// ```rust
-  /// use tricorder::core::HostTag;
+  /// use tricorder::prelude::HostTag;
   ///
   /// let tag = HostTag::new("example").unwrap();
   /// # assert_eq!(tag.to_string(), String::from("example"));

@@ -32,7 +32,7 @@
 //! Or directly via the Rust API:
 //!
 //! ```rust
-//! use tricorder::core::{Inventory, Host, HostId, HostTag};
+//! use tricorder::prelude::{Inventory, Host, HostId, HostTag};
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
