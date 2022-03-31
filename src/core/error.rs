@@ -10,6 +10,8 @@ pub enum Error {
   FileNotFound(String),
   IsADirectory(String),
   IsAbsolute(String),
+  InvalidHostId(String),
+  InvalidHostTag(String),
 }
 
 impl Display for Error {

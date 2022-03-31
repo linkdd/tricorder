@@ -99,16 +99,16 @@ in your scripts.
 software:
 
 ```rust
-use tricorder::core::{Inventory, Host};
+use tricorder::core::{Inventory, Host, HostId, HostTag};
 use tricorder::tasks::{TaskRunner, exec};
 use serde_json::json;
 
 let inventory = Inventory::new()
   .add_host(
-    Host::new("localhost".to_string(), "localhost:22".to_string())
+    Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
       .set_user("root".to_string())
-      .add_tag("local".to_string())
-      .set_var("msg", json!("hello"))
+      .add_tag(HostTag::new("local").unwrap())
+      .set_var("msg".to_string(), json!("hello"))
   );
 
 let task = exec::Task::new("echo \"{host.id} says {host.vars.msg}\"".to_string());

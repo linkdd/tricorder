@@ -32,16 +32,18 @@
 //! Or directly via the Rust API:
 //!
 //! ```rust
-//! use tricorder::core::{Inventory, Host};
+//! use tricorder::core::{Inventory, Host, HostId, HostTag};
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new("localhost", "localhost:22")
-//!       .set_user("root")
-//!       .add_tag("local")
-//!       .set_var("foo", json!("bar"))
-//!   );
+//!     Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
+//!       .set_user("root".to_string())
+//!       .add_tag(HostTag::new("local").unwrap())
+//!       .set_var("foo".to_string(), json!("bar"))
+//!       .to_owned()
+//!   )
+//!   .to_owned();
 //! ```
 
 mod result;
@@ -53,5 +55,5 @@ pub use self::{
   result::Result,
   error::Error,
   inventory::Inventory,
-  host::Host,
+  host::{Host, HostId, HostTag},
 };

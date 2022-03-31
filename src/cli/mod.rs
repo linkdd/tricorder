@@ -23,7 +23,7 @@ pub mod exec;
 pub mod upload;
 pub mod download;
 
-use crate::core::{Result, Inventory, Host};
+use crate::core::{Result, Inventory, Host, HostId, HostTag};
 
 use clap::ArgMatches;
 
@@ -35,22 +35,22 @@ pub fn run(matches: ArgMatches) -> Result<()> {
   match matches.subcommand() {
     Some(("info", sub_matches)) => {
       let inventory = get_inventory(inventory_arg);
-      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg)?;
       info::run(hosts, sub_matches)
     },
     Some(("do", sub_matches)) => {
       let inventory = get_inventory(inventory_arg);
-      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg)?;
       exec::run(hosts, sub_matches)
     },
     Some(("upload", sub_matches)) => {
       let inventory = get_inventory(inventory_arg);
-      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg)?;
       upload::run(hosts, sub_matches)
     },
     Some(("download", sub_matches)) => {
       let inventory = get_inventory(inventory_arg);
-      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg);
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg)?;
       download::run(hosts, sub_matches)
     },
     Some((cmd, sub_matches)) => {
@@ -86,26 +86,27 @@ fn get_host_list(
   inventory: Inventory,
   host_id_arg: Option<&str>,
   host_tags_arg: Option<&str>
-) -> Vec<Host> {
+) -> Result<Vec<Host>> {
   if let Some(host_id) = host_id_arg {
-    match inventory.get_host_by_id(host_id.to_string()) {
+    let hostlist = match inventory.get_host_by_id(HostId::new(host_id)?) {
       Some(host) => {
-        return vec![host];
+        vec![host]
       },
       None => {
         eprintln!("Host '{}' not found in inventory, ignoring...", host_id);
-        return vec![];
+        vec![]
       }
-    }
+    };
+    return Ok(hostlist);
   }
 
   if let Some(host_tags) = host_tags_arg {
-    let tags: Vec<String> = host_tags.split(",")
-      .map(|tag| String::from(tag.trim()))
-      .collect();
+    let tags = host_tags.split(",")
+      .map(|tag| HostTag::new(tag.trim()))
+      .collect::<Result<Vec<HostTag>>>()?;
 
-    return inventory.get_hosts_by_tags(tags);
+    return Ok(inventory.get_hosts_by_tags(tags));
   }
 
-  return inventory.hosts.clone();
+  return Ok(inventory.hosts.clone());
 }

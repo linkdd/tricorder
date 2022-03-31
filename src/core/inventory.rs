@@ -1,4 +1,4 @@
-use crate::core::{Result, Error, Host};
+use crate::core::{Result, Error, Host, HostId, HostTag};
 use serde_derive::{Serialize, Deserialize};
 
 use is_executable::IsExecutable;
@@ -98,20 +98,20 @@ impl Inventory {
 
   /// Remove host from the inventory or do nothing if the host's ID was not
   /// found.
-  pub fn remove_host(&mut self, host_id: String) -> &mut Self {
+  pub fn remove_host(&mut self, host_id: HostId) -> &mut Self {
     self.hosts.retain(|host| host.id != host_id);
     self
   }
 
   /// Get `Some(host)` by its ID, or `None` if it does not exist.
-  pub fn get_host_by_id(&self, id: String) -> Option<Host> {
+  pub fn get_host_by_id(&self, id: HostId) -> Option<Host> {
     self.hosts.iter()
       .find(|host| host.id == id)
       .map(|host| host.clone())
   }
 
   /// Get a list of host matching at least on of the provided tags.
-  pub fn get_hosts_by_tags(&self, tags: Vec<String>) -> Vec<Host> {
+  pub fn get_hosts_by_tags(&self, tags: Vec<HostTag>) -> Vec<Host> {
     self.hosts
       .iter()
       .filter(|host| {
