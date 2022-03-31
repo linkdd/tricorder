@@ -19,7 +19,7 @@ enum Token {
   #[token("!")]
   NotOp,
 
-  #[regex("[a-z-A-Z0-9_\\-]+", |lex| lex.slice().parse())]
+  #[regex(r"[^!\&\|\t\n\r\f\(\) ]+", |lex| lex.slice().parse())]
   Tag(String),
 
   #[error]

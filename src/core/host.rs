@@ -12,7 +12,7 @@ use std::{
 };
 
 const HOST_ID_REGEX: &str = r"^[a-zA-Z0-9_][a-zA-Z0-9_\-]*$";
-const HOST_TAG_REGEX: &str = r"^[^!\&\|\t\n\r\f ]+$";
+const HOST_TAG_REGEX: &str = r"^[^!\&\|\t\n\r\f\(\) ]+$";
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct HostId(String);
