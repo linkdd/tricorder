@@ -1,9 +1,11 @@
 use super::{Result, Error};
 
+use serde::Deserialize;
 use ssh2::Session;
 
 use serde_json::Value;
 use serde_derive::{Serialize, Deserialize};
+use serde::de::Deserializer;
 use regex::Regex;
 
 use std::{
@@ -12,11 +14,11 @@ use std::{
 };
 
 const HOST_ID_REGEX: &str = r"^[a-zA-Z0-9_][a-zA-Z0-9_\-]*$";
-const HOST_TAG_REGEX: &str = r"^[^!\&\|\t\n\r\f ]+$";
+const HOST_TAG_REGEX: &str = r"^[^!\&\|\t\n\r\f\(\) ]+$";
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, PartialEq)]
 pub struct HostId(String);
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, PartialEq)]
 pub struct HostTag(String);
 
 /// Abstraction of a host found in the inventory
@@ -64,6 +66,24 @@ impl HostId {
   pub fn to_string(self) -> String {
     let Self(s) = self;
     s.clone()
+  }
+}
+
+impl<'de> Deserialize<'de> for HostId {
+  fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where D: Deserializer<'de>
+  {
+    let src = String::deserialize(deserializer)?;
+    HostId::new(src.as_str()).map_err(serde::de::Error::custom)
+  }
+}
+
+impl<'de> Deserialize<'de> for HostTag {
+  fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where D: Deserializer<'de>
+  {
+    let src = String::deserialize(deserializer)?;
+    HostTag::new(src.as_str()).map_err(serde::de::Error::custom)
   }
 }
 

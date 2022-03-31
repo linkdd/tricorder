@@ -12,6 +12,7 @@ pub enum Error {
   IsAbsolute(String),
   InvalidHostId(String),
   InvalidHostTag(String),
+  InvalidToken(String),
 }
 
 impl Display for Error {

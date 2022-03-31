@@ -48,12 +48,14 @@
 
 mod result;
 mod error;
+mod tags;
 mod inventory;
 mod host;
 
 pub use self::{
   result::Result,
   error::Error,
+  tags::eval_tag_expr,
   inventory::Inventory,
   host::{Host, HostId, HostTag},
 };
