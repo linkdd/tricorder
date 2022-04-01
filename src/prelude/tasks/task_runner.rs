@@ -91,3 +91,93 @@ fn apply_to_host<'host, Data: Send>(
       })
     )
 }
+
+#[cfg(test)]
+mod tests {
+  use crate::prelude::Error;
+  use super::*;
+
+  pub struct DummyTask;
+
+  impl DummyTask {
+    pub fn new() -> Self {
+      Self{}
+    }
+  }
+
+  impl GenericTask<i32> for DummyTask {
+    fn prepare(&self, host: Host) -> Result<i32> {
+      if host.id.to_string() == String::from("success") {
+        Ok(1)
+      }
+      else {
+        Err(Box::new(Error::Other(String::from("failure"))))
+      }
+    }
+
+    fn apply(&self, host: Host, data: i32) -> TaskResult {
+      if host.id.to_string() == String::from("success") {
+        Ok(json!(data + 1))
+      }
+      else {
+        Err(Box::new(Error::Other(String::from("failure"))))
+      }
+    }
+  }
+
+  fn setup_success_host() -> Host {
+    Host::new(Host::id("success").unwrap(), "success:22".to_string())
+  }
+
+  fn setup_failure_host() -> Host {
+    Host::new(Host::id("failure").unwrap(), "failure:22".to_string())
+  }
+
+  #[test]
+  fn prepare_host_should_work() {
+    let success_host = setup_success_host();
+    let failure_host = setup_failure_host();
+    let task = DummyTask::new();
+
+    match prepare_host(&task, &success_host) {
+      Ok((host, 1)) => {
+        assert_eq!(host, &success_host);
+        assert!(true);
+      },
+      Err(_) => {
+        assert!(false, "Unexpected error for successful host");
+      },
+      _ => {
+        assert!(false, "Unexpected result for successful host");
+      }
+    }
+
+    match prepare_host(&task, &failure_host) {
+      Err(_) => {
+        assert!(true);
+      },
+      _ => {
+        assert!(false, "Unexpected result for failed host");
+      }
+    }
+  }
+
+  #[test]
+  fn apply_to_host_should_work() {
+    let success_host = setup_success_host();
+    let failure_host = setup_failure_host();
+    let task = DummyTask::new();
+
+    assert_eq!(apply_to_host(&task, &success_host, 1), json!({
+      "host": "success",
+      "success": true,
+      "info": 2 as i32
+    }));
+
+    assert_eq!(apply_to_host(&task, &failure_host, 1), json!({
+      "host": "failure",
+      "success": false,
+      "error": "Other(\"failure\")"
+    }));
+  }
+}

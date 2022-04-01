@@ -13,6 +13,7 @@ pub enum Error {
   InvalidHostId(String),
   InvalidHostTag(String),
   InvalidToken(String),
+  Other(String),
 }
 
 impl Display for Error {
