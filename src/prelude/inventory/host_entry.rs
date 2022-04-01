@@ -7,7 +7,11 @@ use super::{
 use serde_json::Value;
 use serde_derive::{Serialize, Deserialize};
 
-use std::collections::HashMap;
+use ssh2::Session;
+use std::{
+  net::TcpStream,
+  collections::HashMap,
+};
 
 /// Abstraction of a host found in the inventory
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -77,6 +81,18 @@ impl Host {
   pub fn remove_var(&mut self, key: String) -> &mut Self {
     self.vars.remove(&key);
     self
+  }
+
+  /// Open SSH session to host and authenticate using `ssh-agent`
+  pub fn get_session(&self) -> Result<Session> {
+    let sock = TcpStream::connect(self.address.clone())?;
+    let mut sess = Session::new()?;
+
+    sess.set_tcp_stream(sock);
+    sess.handshake()?;
+    sess.userauth_agent(&self.user)?;
+
+    Ok(sess)
   }
 }
 
