@@ -16,6 +16,14 @@ cat > $TRICORDER_DIR/inventory.toml <<-EOT
 id = "localhost"
 address = "localhost:${SSH_FIXTURE_PORT}"
 user = "${TRICORDER_USER}"
-tags = ["local", "test"]
+tags = ["local", "test-success"]
+vars = { msg = "hi" }
+
+[[hosts]]
+
+id = "localhost-fail"
+address = "non-existant-domain:22"
+user = "${TRICORDER_USER}"
+tags = ["local", "test-failure"]
 vars = { msg = "hi" }
 EOT
