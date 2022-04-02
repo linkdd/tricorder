@@ -30,7 +30,8 @@
 //!     "success": true,
 //!     "info": {
 //!       "exit_code": 0,
-//!       "output": "..."
+//!       "stdout": "...",
+//!       "stderr": "..."
 //!     }
 //!   },
 //!   {
@@ -79,15 +80,19 @@ impl GenericTask<String> for Task {
     let mut channel = sess.channel_session()?;
     channel.exec(&command)?;
 
-    let mut output = String::new();
-    channel.read_to_string(&mut output)?;
+    let mut stdout = String::new();
+    channel.read_to_string(&mut stdout)?;
+    let mut stderr = String::new();
+    channel.stderr().read_to_string(&mut stderr)?;
+
     channel.wait_close()?;
 
     let exit_code = channel.exit_status()?;
 
     Ok(json!({
       "exit_code": exit_code,
-      "output": output,
+      "stdout": stdout,
+      "stderr": stderr,
     }))
   }
 }

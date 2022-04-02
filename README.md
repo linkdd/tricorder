@@ -84,7 +84,8 @@ is written as a JSON document on `stdout`:
     "success": true,
     "info": {
       "exit_code": 0,
-      "output": "..."
+      "stdout": "...",
+      "stderr": "...",
     }
   }
 ]
