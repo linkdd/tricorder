@@ -11,7 +11,7 @@ cleanup_ssh() {
   # Stop the SSH server and local SSH agent
   kill $(< $SSH_DIR/sshd.pid) $SSH_AGENT_PID || true
 
-  test -f $SSFDIR/sshd.log && cat $SSH_DIR/sshd.log
+  test -f $SSH_DIR/sshd.log && cat $SSH_DIR/sshd.log
 }
 trap cleanup_ssh EXIT
 
@@ -31,11 +31,9 @@ ssh-keygen -f $SSH_DIR/ssh_host_rsa_key -N "" -t rsa
 cat > $SSH_DIR/sshd_config <<-EOT
 AuthorizedKeysFile=$SSH_DIR/authorized_keys
 HostKey=$SSH_DIR/ssh_host_rsa_key
+HostKeyAlgorithms ssh-rsa
 PidFile=$SSH_DIR/sshd.pid
 Subsystem sftp internal-sftp
-UsePAM yes
-X11Forwarding no
-UsePrivilegeSeparation no
 PrintMotd yes
 PermitTunnel yes
 KbdInteractiveAuthentication yes
