@@ -5,4 +5,4 @@ set -ex
 source ./tests/setup_ssh.sh
 source ./tests/setup_tricorder.sh
 
-cargo test
+cargo test -- --test-threads=1
