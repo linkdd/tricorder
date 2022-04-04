@@ -1,6 +1,6 @@
 [package]
 name = "tricorder"
-version = "0.8.0"
+version = "0.9.0"
 
 description = "Automation, the KISS way, no YAML involved."
 keywords = ["automation", "ssh"]
