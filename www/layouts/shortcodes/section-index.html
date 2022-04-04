@@ -1,0 +1,22 @@
+<div class="lcars-index">
+  <table>
+    <thead>
+      <tr>
+        <th>Document</th>
+        <th class="w-full">Description</th>
+        <th>Reading time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .Page.Pages }}
+        <tr onclick="location.href='{{ .RelPermalink }}'">
+          <td>
+            <a href="{{ .RelPermalink }}">{{ .Params.DocumentName }}</a>
+          </td>
+          <td>{{ .Params.description }}</td>
+          <td>N/A</td>
+        </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>

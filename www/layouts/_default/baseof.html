@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{ partial "meta.html" . }}
+    {{ partial "css.html" . }}
+  </head>
+
+  <body>
+    <main>
+      <nav>
+        <div class="menu">
+          {{ range .Site.Menus.main }}
+            <a
+              href="{{ .URL }}"
+              {{ if or (eq $.RelPermalink .URL) (eq $.Params.MenuHref .URL) }}
+              class="active"
+              {{ end }}
+            >
+              {{ partial (printf "icons/%s.html" .Params.icon) . }}
+            </a>
+          {{ end }}
+        </div>
+      </nav>
+
+      <article>
+        <header>{{ .Page.Title }}</header>
+
+        {{ block "content" . }}
+        {{ end }}
+
+        <footer>{{ .Site.Params.License | markdownify }}</footer>
+      </article>
+    </main>
+  </body>
+</html>

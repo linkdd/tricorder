@@ -1,0 +1,20 @@
+{
+  "name": "tricorder-www",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm run build:css && npm run build:html",
+    "build:css": "tailwindcss -i styles/main.css -o static/css/style.css --minify",
+    "build:html": "hugo --minify",
+    "watch": "concurrently \"npm:watch:css\" \"npm:watch:html\"",
+    "watch:css": "tailwindcss -i styles/main.css -o static/css/style.css --watch",
+    "watch:html": "hugo serve -w"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.4",
+    "postcss": "^8.4.12",
+    "tailwindcss": "^3.0.23"
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0"
+  }
+}

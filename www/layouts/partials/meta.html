@@ -1,0 +1,9 @@
+{{ if eq "/" .RelPermalink }}
+  <title>{{ .Site.Title }}</title>
+{{ else }}
+  <title>{{ .Site.Title }} - {{ .Page.Title }}</title>
+{{ end }}
+
+<meta charset="utf-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />

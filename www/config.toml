@@ -1,0 +1,42 @@
+baseURL = "/"
+title = "tricorder"
+
+[params]
+
+license = """
+Website content is distributed under the terms of the
+[CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
+"""
+
+[menu]
+[[menu.main]]
+
+weight = 10
+identifier = "home"
+name = "Home"
+url = "/"
+params = { icon = "home" }
+
+[[menu.main]]
+
+weight = 20
+identifier = "repo"
+name = "Repository"
+url = "https://github.com/linkdd/tricorder"
+params = { icon = "github" }
+
+[[menu.main]]
+
+weight = 30
+identifier = "tutorials"
+name = "Tutorials"
+url = "/tutorials/"
+params = { icon = "book" }
+
+[[menu.main]]
+
+weight = 40
+identifier = "docs"
+name = "Documentation"
+url = "https://docs.rs/tricorder/latest/tricorder/"
+params = { icon = "code" }
