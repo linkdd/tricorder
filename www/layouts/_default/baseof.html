@@ -12,7 +12,7 @@
           {{ range .Site.Menus.main }}
             <a
               href="{{ .URL }}"
-              {{ if or (eq $.RelPermalink .URL) (eq $.Params.MenuHref .URL) }}
+              {{ if or (eq $.RelPermalink .URL) (eq (relURL $.Params.MenuHref) .URL) }}
               class="active"
               {{ end }}
             >
