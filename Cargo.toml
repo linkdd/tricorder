@@ -12,7 +12,7 @@ repository = "https://github.com/linkdd/tricorder"
 license = "MIT"
 readme = "README.md"
 
-exclude = ["examples/"]
+exclude = ["examples/", "www/", ".github/"]
 
 edition = "2021"
 
