@@ -23,7 +23,7 @@ pub mod exec;
 pub mod upload;
 pub mod download;
 
-use crate::core::{Result, Inventory, Host, HostId};
+use crate::prelude::{Result, Inventory, Host, HostId};
 
 use clap::ArgMatches;
 

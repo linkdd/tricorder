@@ -18,7 +18,7 @@
 //! $ tricorder-SUBCOMMAND [options...]
 //! ```
 
-use crate::core::Result;
+use crate::prelude::Result;
 
 use clap::ArgMatches;
 use std::process::{Command, exit};

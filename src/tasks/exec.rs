@@ -3,15 +3,15 @@
 //! Example usage:
 //!
 //! ```no_run
-//! use tricorder::core::{Inventory, Host, HostId, HostTag};
-//! use tricorder::tasks::{TaskRunner, exec};
+//! use tricorder::prelude::*;
+//! use tricorder::tasks::exec;
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
+//!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
 //!       .set_user("root".to_string())
-//!       .add_tag(HostTag::new("local").unwrap())
+//!       .add_tag(Host::tag("local").unwrap())
 //!       .set_var("msg".to_string(), json!("hello"))
 //!       .to_owned()
 //!   )
@@ -30,7 +30,8 @@
 //!     "success": true,
 //!     "info": {
 //!       "exit_code": 0,
-//!       "output": "..."
+//!       "stdout": "...",
+//!       "stderr": "..."
 //!     }
 //!   },
 //!   {
@@ -41,8 +42,7 @@
 //! ]
 //! ```
 
-use crate::core::{Result, Host};
-use super::{Task as TaskTrait, TaskResult};
+use crate::prelude::*;
 
 use tinytemplate::{TinyTemplate, format_unescaped};
 use serde_json::json;
@@ -64,7 +64,7 @@ impl Task {
   }
 }
 
-impl TaskTrait<String> for Task {
+impl GenericTask<String> for Task {
   fn prepare(&self, host: Host) -> Result<String> {
     let mut tt = TinyTemplate::new();
     tt.set_default_formatter(&format_unescaped);
@@ -80,15 +80,19 @@ impl TaskTrait<String> for Task {
     let mut channel = sess.channel_session()?;
     channel.exec(&command)?;
 
-    let mut output = String::new();
-    channel.read_to_string(&mut output)?;
+    let mut stdout = String::new();
+    channel.read_to_string(&mut stdout)?;
+    let mut stderr = String::new();
+    channel.stderr().read_to_string(&mut stderr)?;
+
     channel.wait_close()?;
 
     let exit_code = channel.exit_status()?;
 
     Ok(json!({
       "exit_code": exit_code,
-      "output": output,
+      "stdout": stdout,
+      "stderr": stderr,
     }))
   }
 }

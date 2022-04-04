@@ -1,4 +1,4 @@
-use tricorder::{core::Result, cli};
+use tricorder::{prelude::Result, cli};
 use clap::{command, arg, Command};
 
 fn main() -> Result<()> {

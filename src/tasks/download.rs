@@ -3,15 +3,15 @@
 //! Example usage:
 //!
 //! ```no_run
-//! use tricorder::core::{Inventory, Host, HostId, HostTag};
-//! use tricorder::tasks::{TaskRunner, download};
+//! use tricorder::prelude::*;
+//! use tricorder::tasks::download;
 //! use serde_json::json;
 //!
 //! let inventory = Inventory::new()
 //!   .add_host(
-//!     Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
+//!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
 //!       .set_user("root".to_string())
-//!       .add_tag(HostTag::new("local").unwrap())
+//!       .add_tag(Host::tag("local").unwrap())
 //!       .set_var("msg".to_string(), json!("hello"))
 //!       .to_owned()
 //!   )
@@ -44,8 +44,7 @@
 //! ]
 //! ```
 
-use crate::core::{Result, Error, Host};
-use super::{Task as TaskTrait, TaskResult};
+use crate::prelude::*;
 
 use serde_json::json;
 
@@ -72,7 +71,7 @@ impl Task {
   }
 }
 
-impl TaskTrait<String> for Task {
+impl GenericTask<String> for Task {
   fn prepare(&self, host: Host) -> Result<String> {
     let local_path = Path::new(&self.local_path);
 

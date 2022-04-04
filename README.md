@@ -16,11 +16,16 @@ YAML is used to provide a declarative syntax of your automated workflow. This is
 nice for simple use cases, but automation can become rather complex very
 quickly.
 
-Then those tools implement control flow structures (conditional execution,
-loops, parallelization, ...), then the ability to save values into variables.
+But once those tools start implementing:
 
-Before you know it, you're programming in YAML. And the developer experience of
-such a language is terrible.
+ - control flow structures (conditions, loops)
+ - variable assignations
+ - modules
+ - package management
+ - ...
+
+Your YAML files become a programming language with terrible developer
+experience.
 
 **tricorder** aims to fix this. It gives you a single tool to perform tasks on
 multiple remotes. You then use your common UNIX tools like `bash`, `jq`, `curl`,
@@ -84,7 +89,8 @@ is written as a JSON document on `stdout`:
     "success": true,
     "info": {
       "exit_code": 0,
-      "output": "..."
+      "stdout": "...",
+      "stderr": "...",
     }
   }
 ]
@@ -99,17 +105,19 @@ in your scripts.
 software:
 
 ```rust
-use tricorder::core::{Inventory, Host, HostId, HostTag};
-use tricorder::tasks::{TaskRunner, exec};
+use tricorder::prelude::*;
+use tricorder::tasks::exec;
 use serde_json::json;
 
 let inventory = Inventory::new()
   .add_host(
-    Host::new(HostId::new("localhost").unwrap(), "localhost:22".to_string())
+    Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
       .set_user("root".to_string())
-      .add_tag(HostTag::new("local").unwrap())
+      .add_tag(Host::tag("local").unwrap())
       .set_var("msg".to_string(), json!("hello"))
-  );
+      .to_owned()
+  )
+  .to_owned();
 
 let task = exec::Task::new("echo \"{host.id} says {host.vars.msg}\"".to_string());
 

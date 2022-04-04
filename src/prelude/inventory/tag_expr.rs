@@ -1,4 +1,4 @@
-use super::{Result, Error};
+use crate::prelude::{Result, Error};
 use logos::Logos;
 use bet::BeTree;
 
@@ -58,19 +58,6 @@ fn parse(input: &str) -> Result<BeTree<BoolOp, String>> {
 }
 
 /// Evaluate a boolean tag expression against a list of tags.
-///
-/// Example:
-///
-/// ```rust
-/// use tricorder::core::eval_tag_expr;
-///
-/// let tags = vec!["foo".to_string(), "bar".to_string(), "baz".to_string()];
-/// assert!(eval_tag_expr("foo", tags.clone()).unwrap());
-/// assert!(eval_tag_expr("foo | biz", tags.clone()).unwrap());
-/// assert!(!eval_tag_expr("foo & biz", tags.clone()).unwrap());
-/// assert!(eval_tag_expr("foo & (bar | biz)", tags.clone()).unwrap());
-/// assert!(!eval_tag_expr("foo & !(bar | biz)", tags.clone()).unwrap());
-/// ```
 pub fn eval_tag_expr(expr: &str, tags: Vec<String>) -> Result<bool> {
   let expr = parse(expr)?;
   let res = expr.eval_faillible(
@@ -94,5 +81,25 @@ pub fn eval_tag_expr(expr: &str, tags: Vec<String>) -> Result<bool> {
   match res {
     Some(val) => Ok(val),
     None => unreachable!("No boolean were returned")
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn eval_tag_expr_should_return_appropriate_values() {
+    let tags = vec![
+      "foo".to_string(),
+      "bar".to_string(),
+      "baz".to_string()
+    ];
+
+    assert!(eval_tag_expr("foo", tags.clone()).unwrap());
+    assert!(eval_tag_expr("foo | biz", tags.clone()).unwrap());
+    assert!(!eval_tag_expr("foo & biz", tags.clone()).unwrap());
+    assert!(eval_tag_expr("foo & (bar | biz)", tags.clone()).unwrap());
+    assert!(!eval_tag_expr("foo & !(bar | biz)", tags.clone()).unwrap());
   }
 }

@@ -33,6 +33,6 @@
 //! with any scripting language or programming language of your choice, instead
 //! of forcing you to develop in a sub-par custom YAML DSL.
 
-pub mod core;
+pub mod prelude;
 pub mod tasks;
 pub mod cli;

@@ -6,8 +6,8 @@
 //! $ tricorder -i inventory info
 //! ```
 
-use crate::core::{Result, Host};
-use crate::tasks::{TaskRunner, info};
+use crate::prelude::*;
+use crate::tasks::info;
 
 use clap::ArgMatches;
 
