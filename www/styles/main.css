@@ -1,0 +1,323 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Star Trek LCARS';
+    src: url('/fonts/star-trek-lcars.ttf');
+  }
+
+  @keyframes blinker {
+    from { opacity: 1.0; }
+    50% { opacity: 0; }
+    to { opacity: 1.0; }
+  }
+}
+
+@layer components {
+  main {
+    @apply min-h-screen w-full;
+    @apply flex flex-row;
+    @apply bg-slate-800;
+  }
+
+  main nav {
+    @apply w-16 min-h-full;
+    @apply flex flex-col;
+    @apply bg-slate-700 shadow-2xl;
+  }
+
+  main nav .menu {
+    @apply sticky top-0;
+  }
+
+  main nav .menu a {
+    @apply w-16 h-16;
+    @apply flex align-middle;
+    @apply border-l-4 border-l-transparent hover:border-l-blue-500;
+    @apply transition-all ease-in-out duration-150;
+  }
+
+  main nav .menu a.active {
+    @apply border-l-blue-300 hover:border-l-blue-500;
+  }
+
+  main nav .menu a svg {
+    @apply w-1/2 h-auto m-auto;
+  }
+
+  main nav .menu a svg path,
+  main nav .menu a svg polygon,
+  main nav .menu a svg rect {
+    @apply transition-all ease-in-out duration-150;
+    @apply fill-white;
+  }
+
+  main nav .menu a.active svg path,
+  main nav .menu a.active svg polygon,
+  main nav .menu a.active svg rect {
+    @apply fill-blue-300;
+  }
+
+  main nav .menu a:hover svg path,
+  main nav .menu a:hover svg polygon,
+  main nav .menu a:hover svg rect {
+    @apply fill-blue-500;
+  }
+
+  main nav .menu a svg circle {
+    @apply transition-all ease-in-out duration-150;
+    @apply stroke-white;
+  }
+
+  main nav .menu a:hover svg circle {
+    @apply stroke-blue-500;
+  }
+
+  main article {
+    @apply border-r-4 border-r-orange-300;
+    @apply text-white;
+    width: calc(100% - 4rem);
+  }
+
+  main article header {
+    @apply lg:w-4/5;
+    @apply p-3 lg:mx-auto mb-6;
+    @apply text-black text-center text-4xl font-bold font-mono;
+    @apply bg-yellow-500 shadow-2xl lg:rounded-b-full;
+  }
+
+  main article header::before {
+    @apply font-startrek;
+    content: '$> ';
+  }
+
+  main article header::after {
+    @apply font-startrek;
+    content: '_';
+    animation: blinker 1s infinite;
+  }
+
+  main article footer {
+    @apply p-12 mt-12 clear-both;
+    @apply text-center;
+  }
+
+  main article h1 {
+    @apply w-11/12 rounded-l-full;
+    @apply my-6 p-3 pl-6 ml-auto clear-both;
+    @apply bg-orange-300 shadow-2xl;
+    @apply text-black text-2xl font-bold font-startrek;
+  }
+
+  main article h2 {
+    @apply w-10/12 rounded-l-full;
+    @apply my-6 p-3 pl-6 ml-auto clear-both;
+    background: linear-gradient(135deg, rgb(3 105 161) 85%, transparent 85%, transparent 86%, rgb(253 186 116) 86%);
+    @apply shadow-2xl;
+    @apply text-gray-300 text-2xl font-bold font-startrek;
+  }
+
+  main article h3 {
+    @apply w-9/12 rounded-l-full;
+    @apply my-6 p-3 pl-6 ml-auto clear-both;
+    background: linear-gradient(135deg, rgb(153 27 27) 70%, transparent 70%, transparent 71%, rgb(3 105 161) 71%, rgb(3 105 161) 85%, transparent 85%, transparent 86%, rgb(253 186 116) 86%);
+    @apply shadow-2xl;
+    @apply text-gray-300 text-2xl font-bold font-startrek;
+  }
+
+  main article h4,
+  main article h5,
+  main article h6 {
+    @apply my-6 p-3 pl-6;
+    @apply font-bold text-xl;
+  }
+
+  main article p {
+    @apply mx-6 px-6 py-3;
+    @apply font-sans text-lg text-justify;;
+  }
+
+  main article p code {
+    @apply p-1;
+    @apply bg-neutral-800 text-red-300
+  }
+
+  main article a {
+    @apply transition-all ease-in-out duration-150;
+    @apply text-blue-400 hover:text-blue-600 underline;
+  }
+
+  main article figure {
+    @apply m-6 p-0 float-right;
+    @apply bg-neutral-800 border-4 border-orange-300 shadow-2xl;
+  }
+
+  main article figure figcaption {
+    @apply text-center;
+  }
+
+  main article ul {
+    @apply px-6 ml-12;
+    @apply list-disc;
+  }
+
+  main article blockquote {
+    @apply mx-12;
+    @apply border-l-4 border-l-blue-300;
+    @apply italic;
+  }
+
+  main article blockquote p {
+    @apply px-1;
+  }
+
+  main article .highlight {
+    @apply p-6 mx-6;
+    @apply overflow-auto;
+  }
+
+  main article .highlight pre {
+    @apply p-6;
+    @apply shadow-2xl;
+    @apply overflow-auto;
+  }
+
+  .lcars-screen {
+    @apply my-6 m-auto;
+    @apply w-3/4;
+    @apply flex flex-row items-stretch;
+    @apply shadow-2xl;
+  }
+
+  .lcars-screen .buttons {
+    @apply flex flex-col items-stretch justify-between;
+    @apply bg-neutral-800 pr-1;
+    @apply border-l-4 border-orange-300 rounded-l-2xl;
+  }
+
+  .lcars-screen .buttons a {
+    @apply p-6;
+    @apply transition-all ease-in-out duration-150;
+    @apply bg-orange-300 hover:bg-yellow-500;
+    @apply text-black font-startrek font-bold text-center no-underline;
+  }
+
+  .lcars-screen .buttons a:first-child {
+    @apply rounded-tl-xl;
+  }
+
+  .lars-screen .buttons a:not(:first-child):not(:last-child) {
+    @apply my-1;
+  }
+
+  .lcars-screen .buttons a:last-child {
+    @apply rounded-bl-xl;
+  }
+
+  .lcars-screen .viewport {
+    @apply p-6 relative flex-1;
+    @apply border-4 border-orange-300;
+    @apply bg-neutral-800;
+  }
+
+  .lcars-screen .viewport::before {
+    content: '';
+    @apply left-0 right-0;
+    @apply bg-neutral-800;
+    @apply m-auto absolute block z-10;
+    width: 95%;
+    top: -4px;
+    height: calc(100% + 8px);
+  }
+
+  .lcars-screen .viewport canvas {
+    @apply relative block z-20 w-full h-full;
+  }
+
+  .lcars-actions {
+    @apply my-6 py-6 sm:mx-6 md:w-3/4 md:mx-auto;
+    @apply text-center;
+  }
+
+  .lcars-actions a {
+    @apply p-6;
+    @apply transition-all ease-in-out duration-150;
+    @apply bg-orange-300 text-black font-bold font-startrek no-underline;
+    @apply hover:bg-yellow-500 hover:text-black;
+  }
+
+  .lcars-actions a:first-child {
+    @apply rounded-l-full;
+    @apply pl-9 mr-1;
+  }
+
+  .lcars-actions a:not(:first-child):not(:last-child) {
+    @apply mx-1;
+  }
+
+  .lcars-actions a:last-child {
+    @apply rounded-r-full;
+    @apply pr-9 ml-1;
+  }
+
+  .lcars-index {
+    @apply p-6 w-full;
+  }
+
+  .lcars-index table {
+    @apply w-full;
+  }
+
+  .lcars-index table td,
+  .lcars-index table th {
+    @apply p-3;
+    @apply text-left whitespace-nowrap font-startrek text-2xl;
+  }
+
+  .lcars-index table th {
+    @apply text-red-600 uppercase;
+  }
+
+  .lcars-index table tr td {
+    @apply transition-all ease-in-out duration-150;
+    @apply text-blue-400;
+  }
+
+  .lcars-index table td a {
+    @apply no-underline uppercase;
+  }
+
+  .lcars-index table tr:hover td,
+  .lcars-index table tr:hover td a {
+    @apply text-blue-600;
+    @apply cursor-pointer;
+  }
+
+  .lcars-notice {
+    @apply sm:w-full md:w-1/4;
+    @apply sm:m-6 md:my-6 md:mx-auto p-6;
+    @apply flex flex-row items-center;
+    @apply border-4 border-orange-600 bg-neutral-800;
+    @apply shadow-2xl;
+  }
+
+  .lcars-notice-icon svg {
+    @apply w-32 h-auto;
+  }
+
+  .lcars-notice-icon svg path,
+  .lcars-notice-icon svg polygon,
+  .lcars-notice-icon svg rect {
+    @apply fill-yellow-500;
+  }
+
+  .lcars-notice-icon svg circle {
+    @apply stroke-yellow-500;
+  }
+
+  .lcars-notice-text {
+    @apply text-yellow-500 text-4xl text-center font-bold font-startrek;
+  }
+}
