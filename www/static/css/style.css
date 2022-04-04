@@ -426,7 +426,7 @@ Ensure the default browser behavior of the `hidden` attribute.
 @font-face {
   font-family: 'Star Trek LCARS';
 
-  src: url('/fonts/star-trek-lcars.ttf');
+  src: url('../fonts/star-trek-lcars.ttf');
 }
 
 @-webkit-keyframes blinker {
