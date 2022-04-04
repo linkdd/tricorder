@@ -1,10 +1,10 @@
 <div class="lcars-screen">
   <div class="buttons">
-    <a href="/tutorials/cli/">Command Line Interface</a>
-    <a href="/tutorials/inventory/">Multiple remotes, all at once</a>
-    <a href="/tutorials/setup-auth/">Connect via SSH</a>
-    <a href="/tutorials/setup-auth/">Completely agent-less</a>
-    <a href="/tutorials/cicd/">Integrate seamlessly in your CI/CD</a>
+    <a href="{{ "/tutorials/cli/" | relURL }}">Command Line Interface</a>
+    <a href="{{ "/tutorials/inventory/" | relURL }}">Multiple remotes, all at once</a>
+    <a href="{{ "/tutorials/setup-auth/" | relURL }}">Connect via SSH</a>
+    <a href="{{ "/tutorials/setup-auth/" | relURL }}">Completely agent-less</a>
+    <a href="{{ "/tutorials/cicd/" | relURL }}">Integrate seamlessly in your CI/CD</a>
   </div>
   <div class="viewport">
     <canvas id="lcars-canvas"></canvas>
@@ -12,12 +12,12 @@
 </div>
 
 <div id="lcars-assets" class="hidden">
-  <img id="lcars-asset-desktop" src="/img/desktop.svg" />
-  <img id="lcars-asset-server" src="/img/server.svg" />
-  <img id="lcars-asset-server-pending" src="/img/server-pending.svg" />
-  <img id="lcars-asset-server-success" src="/img/server-success.svg" />
-  <img id="lcars-asset-server-error" src="/img/server-error.svg" />
-  <img id="lcars-asset-scanlines" src="/img/scanlines.png" />
+  <img id="lcars-asset-desktop" src="{{ "/img/desktop.svg" | relURL }}" />
+  <img id="lcars-asset-server" src="{{ "/img/server.svg" | relURL }}" />
+  <img id="lcars-asset-server-pending" src="{{ "/img/server-pending.svg" | relURL }}" />
+  <img id="lcars-asset-server-success" src="{{ "/img/server-success.svg" | relURL }}" />
+  <img id="lcars-asset-server-error" src="{{ "/img/server-error.svg" | relURL }}" />
+  <img id="lcars-asset-scanlines" src="{{ "/img/scanlines.png" | relURL }}" />
 </div>
 
 <script defer type="application/javascript">

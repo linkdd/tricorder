@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://linkdd.github.io/tricorder/"
 title = "tricorder"
 
 [params]
