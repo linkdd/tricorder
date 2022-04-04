@@ -6,7 +6,7 @@ Automation the [KISS](https://en.wikipedia.org/wiki/KISS_principle) way.
 [![Crates.io](https://img.shields.io/crates/l/tricorder?style=flat-square)](https://crates.io/crates/tricorder)
 [![Crates.io](https://img.shields.io/crates/d/tricorder?style=flat-square)](https://crates.io/crates/tricorder)
 [![docs.rs](https://img.shields.io/docsrs/tricorder?style=flat-square)](https://docs.rs/tricorder)
-[![website](![Website](https://img.shields.io/website?down_message=down&style=flat-square&up_color=blue&up_message=up&url=https%3A%2F%2Flinkdd.github.io%2Ftricorder%2F))](https://linkdd.github.io/tricorder/)
+[![website](https://img.shields.io/github/workflow/status/linkdd/tricorder/deploy-site?label=website&style=flat-square)](https://linkdd.github.io/tricorder/)
 
 ## Introduction
 
