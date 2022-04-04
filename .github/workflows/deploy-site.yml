@@ -1,0 +1,50 @@
+name: deploy-site
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'www/**'
+      - '.github/workflows/deploy-site.yml'
+
+jobs:
+  www:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-code@scm
+        uses: actions/checkout@main
+      - name: checkout-ghpages@scm
+        uses: actions/checkout@main
+        with:
+          ref: gh-pages
+          path: www/build/
+
+
+      - name: setup@node
+        uses: actions/setup-node@master
+        with:
+          node-version: '16.x'
+
+      - name: setup@yarn
+        run: npm install -g yarn
+
+      - name: install@yarn
+        run: |
+          cd www
+          yarn install
+
+      - name: docs@yarn
+        run: |
+          cd www
+          yarn run build
+
+      - name: publish@scm
+        run: |
+          cd www/build/
+          touch .nojekyll
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m ":construction_worker: publish website" --allow-empty
+          git push origin gh-pages
