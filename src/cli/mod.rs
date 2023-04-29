@@ -22,6 +22,7 @@ pub mod info;
 pub mod exec;
 pub mod upload;
 pub mod download;
+pub mod module;
 
 use crate::prelude::{Result, Inventory, Host, HostId};
 
@@ -53,6 +54,11 @@ pub fn run(matches: ArgMatches) -> Result<()> {
       let hosts = get_host_list(inventory, host_id_arg, host_tags_arg)?;
       download::run(hosts, sub_matches)
     },
+    Some(("module", sub_matches)) => {
+      let inventory = get_inventory(inventory_arg);
+      let hosts = get_host_list(inventory, host_id_arg, host_tags_arg)?;
+      module::run(hosts, sub_matches)
+    }
     Some((cmd, sub_matches)) => {
       external::run(cmd, inventory_arg, host_id_arg, host_tags_arg, sub_matches)
     },
