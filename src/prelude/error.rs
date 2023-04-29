@@ -7,6 +7,7 @@ use std::{
 pub enum Error {
   MissingInput(String),
   CommandExecutionFailed(String),
+  UploadFailed(String),
   FileNotFound(String),
   IsADirectory(String),
   IsAbsolute(String),

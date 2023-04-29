@@ -2,12 +2,10 @@ use crate::prelude::*;
 use crate::tasks::module;
 
 use clap::ArgMatches;
-use file_mode::Mode;
-use std::convert::TryFrom;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
     let data_dir = matches.value_of("data_file_path").unwrap().to_owned();
-    let all = matches.value_of("all");
+    let _all = matches.value_of("all");
     let module_name = matches.value_of("module").unwrap().to_owned();
     let parallel = matches.is_present("parallel");
 

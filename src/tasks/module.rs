@@ -10,12 +10,11 @@
 
 use crate::prelude::*;
 
-use tinytemplate::{TinyTemplate, format_unescaped};
 use serde_json::json;
 
 use std::io::prelude::*;
-use std::process::Command;
-use std::process::Output;
+use std::path::Path;
+use std::fs::File;
 
 /// Describe an `module` task
 pub struct Task {
@@ -34,7 +33,7 @@ impl Task {
 }
 
 impl GenericTask<String> for Task {
-    fn prepare(&self, host: Host) -> Result<String> {
+    fn prepare(&self, _host: Host) -> Result<String> {
         // merge the default data with data in host var
         // todo!
 
@@ -44,24 +43,17 @@ impl GenericTask<String> for Task {
         Ok("testing".to_owned())
     }
 
-    fn apply(&self, host: Host, command: String) -> TaskResult {
+    fn apply(&self, host: Host, _data: String) -> TaskResult {
 
-        let ip = host.vars.get("ip").unwrap().to_string().trim_matches('"').to_string();
-
-        println!("{}", ip);
-
-        let output = Command::new("rsync")
-            .arg("-avzq")
-            .arg( format!("{}{}", &self.data_dir,&self.module_name) )
-            .arg( format!("{}@{}:~/tricoder/", &host.user, &ip) )
-            .output()
-            .expect("fileupload failed");
-
-        println!("status: {} {} {}", output.status, String::from_utf8(output.stdout).unwrap(), String::from_utf8(output.stderr).unwrap());
 
         let sess = host.get_session()?;
+
+        upload_module(&self, &host)?;
+
+
         let mut channel = sess.channel_session()?;
-        channel.exec(&format!("chmod u+x ~/tricoder/{}", &self.module_name))?;
+
+        channel.exec("ls")?; // !todo: execute binary with data
 
         let mut stdout = String::new();
         channel.read_to_string(&mut stdout)?;
@@ -69,6 +61,7 @@ impl GenericTask<String> for Task {
         channel.stderr().read_to_string(&mut stderr)?;
 
         channel.wait_close()?;
+        println!("closed channel");
 
         let exit_code = channel.exit_status()?;
 
@@ -78,4 +71,39 @@ impl GenericTask<String> for Task {
           "stderr": stderr,
         }))
     }
+}
+
+fn upload_module(task: &Task, host: &Host) -> Result<()>{
+
+    let sess = host.get_session()?;
+
+    let mut module_binary_file = File::open(format!("{}{}", task.data_dir, task.module_name))?;
+
+    let mut module_binary: Vec<u8> = vec![];
+    module_binary_file.read_to_end(&mut module_binary)?;
+
+    let mut remote_file = sess.scp_send(
+        Path::new("/home/spiegie/tricoder/mod"), 
+        0o760, 
+        module_binary.len() as u64, 
+        None)?;
+
+    println!("{}",module_binary.len());
+    
+    remote_file.write(&module_binary).unwrap();
+    // Close the channel and wait for the whole content to be transferred
+    remote_file.send_eof().unwrap();
+    remote_file.wait_eof().unwrap();
+    remote_file.close().unwrap();
+    remote_file.wait_close().unwrap();
+
+    Ok(())
+
+    /*if rsync_output.status.success() {
+        Ok(())
+    } else {
+        Err(Box::new(Error::UploadFailed(
+            "failed to upload module".to_string(),
+          )))
+    }*/
 }
