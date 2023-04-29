@@ -90,12 +90,12 @@ fn upload_module(task: &Task, host: &Host) -> Result<()>{
 
     println!("{}",module_binary.len());
     
-    remote_file.write(&module_binary).unwrap();
+    remote_file.write(&module_binary)?;
     // Close the channel and wait for the whole content to be transferred
-    remote_file.send_eof().unwrap();
-    remote_file.wait_eof().unwrap();
-    remote_file.close().unwrap();
-    remote_file.wait_close().unwrap();
+    remote_file.send_eof()?;
+    remote_file.wait_eof()?;
+    remote_file.close()?;
+    remote_file.wait_close()?;
 
     Ok(())
 
