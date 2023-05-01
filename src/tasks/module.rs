@@ -113,7 +113,7 @@ impl Task {
 
         let mut module_binary: Vec<u8> = vec![];
         module_binary_file.read_to_end(&mut module_binary)?;
-        // !todo(fix): create dir if not exists
+        
         let mut remote_file = sess.scp_send(
             Path::new(&format!("{}/.local/tricorder/modules/{}", home_path, self.module_name)), 
             0o700, 
