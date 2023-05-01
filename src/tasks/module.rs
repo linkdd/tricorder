@@ -1,12 +1,66 @@
-//! A module is an executable, that accepts structured
-//! data as Input (json) and performs
-//! actions based on the provided Data
-//!
-//! Task takes default data from <data-file>
-//! default-values get overwritten with custom values in
-//! host var host.vars.module_<module_name>
-//! default.toml should contain all information of the
-//! expected data structure
+//! Upload a Module to the remote host and call it with data
+//! 
+//! Example usage:
+//! 
+//! example for file /path/to/data_file.json 
+//! ```json
+//! {
+//!     "overwritten data": "data_from_file1",
+//!     "filedata": "data_from_file1"
+//! }
+//! ```
+//! an example for a Moule could be a simple shell-script
+//! which reads data from stdin and just echos it
+//! ```shell
+//! #!/bin/bash
+//! read -r data
+//! echo "$data"
+//! ```
+//! 
+//! ```no_run
+//! use tricorder::prelude::*;
+//! use tricorder::tasks::module;
+//! use serde_json::json;
+//! 
+//! let inventory = Inventory::new()
+//!   .add_host(
+//!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
+//!       .set_user("root".to_string())
+//!       .add_tag(Host::tag("local").unwrap())
+//!       .set_var("msg".to_string(), json!("hello"))
+//!       .set_var("module_mod".to_string(), json!({"overwrittendata":"data_from_var1", "vardata":"data_from_var2"}))
+//!       .to_owned()
+//!   )
+//!   .to_owned();
+//! 
+//! let task = module::Taks::new(
+//!     Some("/path/to/data_file.json".to_string(),
+//!     "/path/to/module.exe".to_string(),
+//! );
+//! 
+//! let result = inventory.hosts.run_task_seq(&task).unwrap();
+//! ```
+//! 
+//! The result looks like this:
+//! ```json
+//! [
+//!   {
+//!     "host": "localhost",
+//!     "info": {
+//!         "exit_code":0,
+//!         "stderr":"",
+//!         "stdout":"{
+//!             \"fuledata\":\"data_from_file1\",
+//!             \"overwrittendata\":\"data_from_var11\",
+//!             \"vardata\":\"data_from_var2\"}\n"
+//!         },
+//!     "success":true}]
+//!   }
+//! ]
+//! ```
+//! 
+//! you can see, that the variable "overwrittendata" gets
+//! overwritten by the host-variable
 
 use crate::prelude::*;
 
