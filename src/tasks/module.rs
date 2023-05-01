@@ -1,21 +1,21 @@
 //! A module is an executable, that accepts structured
-//! data as Input (yaml, toml or json) and performs
+//! data as Input (json) and performs
 //! actions based on the provided Data
 //!
-//! Task takes default data from <datadir>/default.toml
+//! Task takes default data from <data-file>
 //! default-values get overwritten with custom values in
-//! host var host.module_<module_name>
+//! host var host.vars.module_<module_name>
 //! default.toml should contain all information of the
 //! expected data structure
 
 use crate::prelude::*;
 
-use serde_json::json;
+use serde_json::{json, Value};
 use ssh2::Channel;
 
 use std::io::prelude::*;
 use std::path::Path;
-use std::fs::File;
+use std::fs::{File, self};
 
 /// Describe an `module` task
 pub struct Task {
@@ -23,6 +23,7 @@ pub struct Task {
     module_path: String,
     module_name: String,
 }
+
 
 impl Task {
     /// Create a new `module` task
@@ -36,14 +37,25 @@ impl Task {
 impl GenericTask<String> for Task {
     fn prepare(&self, host: Host) -> Result<String> {
 
-        if let Some(datapath) = self.data_path.clone() {
+        let hostvars = host.vars.clone();
+        
+        let default = json!({});
 
+        
+        let host_var_data: &Value = hostvars.get(&format!("module_{}", self.module_name)).unwrap_or(&default);
+        println!("host_var_data: {:?}", host_var_data);
+
+        if let Some(datapath) = self.data_path.clone() {
+            println!("merging");
+            let mut data: Value = fs::read_to_string(datapath)?.parse()?;
+            println!("file_data: {:?}", data);
+
+            merge(&mut data, host_var_data); 
+            println!("merged_data: {:?}", data);
+            Ok(serde_json::to_string(&data)?)
+        } else {
+            Ok(serde_json::to_string(&host_var_data)?)
         }
-        // todo! merge data from data-file and host-vars
-        let data = serde_json::to_string(
-            host.vars.get("module_mod").unwrap_or(&json!({}))
-        )?;
-        Ok(data)
     }
 
     fn apply(&self, host: Host, data: String) -> TaskResult {
@@ -117,5 +129,18 @@ impl Task {
         remote_file.wait_close()?;
 
         Ok(())
+    }
+}
+
+fn merge(a: &mut Value, b: &Value) {
+    match (a, b) {
+        (&mut Value::Object(ref mut a), &Value::Object(ref b)) => {
+            for (k, v) in b {
+                merge(a.entry(k.clone()).or_insert(Value::Null), v);
+            }
+        }
+        (a, b) => {
+            *a = b.clone();
+        }
     }
 }
