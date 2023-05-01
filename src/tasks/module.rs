@@ -19,7 +19,7 @@ use std::fs::{File, self};
 
 /// Describe an `module` task
 pub struct Task {
-    data_path: Option<String>, // todo! implement with &str and livetime
+    data_path: Option<String>, // todo(optional) implement with &str and livetime
     module_path: String,
     module_name: String,
 }
@@ -42,16 +42,12 @@ impl GenericTask<String> for Task {
         let default = json!({});
 
         
-        let host_var_data: &Value = hostvars.get(&format!("module_{}", self.module_name)).unwrap_or(&default);
-        println!("host_var_data: {:?}", host_var_data);
+        let host_var_data: &Value = hostvars.get(&format!("module_{}", self.module_name)).unwrap_or(&default); // todo(discuss) needs to be serde_json::Value, because Host.vars is serde_json::Value (maybe we could change this, so everything is toml or we could implement From toml::Value Into json_serde::Value)
 
         if let Some(datapath) = self.data_path.clone() {
-            println!("merging");
             let mut data: Value = fs::read_to_string(datapath)?.parse()?;
-            println!("file_data: {:?}", data);
 
-            merge(&mut data, host_var_data); 
-            println!("merged_data: {:?}", data);
+            merge(&mut data, host_var_data);
             Ok(serde_json::to_string(&data)?)
         } else {
             Ok(serde_json::to_string(&host_var_data)?)
