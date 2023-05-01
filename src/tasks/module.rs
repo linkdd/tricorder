@@ -1,7 +1,7 @@
 //! Upload a Module to the remote host and call it with data
-//! 
+//!
 //! Example usage:
-//! 
+//!
 //! an example for a Moule could be a simple shell-script
 //! which reads data from stdin and just echos it
 //! ```shell
@@ -9,12 +9,12 @@
 //! read -r data
 //! echo "$data"
 //! ```
-//! 
+//!
 //! ```no_run
 //! use tricorder::prelude::*;
 //! use tricorder::tasks::module;
 //! use serde_json::json;
-//! 
+//!
 //! let inventory = Inventory::new()
 //!   .add_host(
 //!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
@@ -25,7 +25,7 @@
 //!       .to_owned()
 //!   )
 //!   .to_owned();
-//! 
+//!
 //! let task = module::Taks::new(
 //!     Some("/path/to/data_file.json".to_string(),
 //!     r#"
@@ -35,10 +35,10 @@
 //!     }
 //!     "#.to_string(),
 //! );
-//! 
+//!
 //! let result = inventory.hosts.run_task_seq(&task).unwrap();
 //! ```
-//! 
+//!
 //! The result looks like this:
 //! ```json
 //! [
@@ -56,7 +56,7 @@
 //!   }
 //! ]
 //! ```
-//! 
+//!
 //! you can see, that the variable "overwrittendata" gets
 //! overwritten by the host-variable
 
@@ -65,9 +65,9 @@ use crate::prelude::*;
 use serde_json::{json, Value};
 use ssh2::Channel;
 
+use std::fs::{self, File};
 use std::io::prelude::*;
 use std::path::Path;
-use std::fs::{File, self};
 
 /// Describe an `module` task
 pub struct Task {
@@ -76,25 +76,28 @@ pub struct Task {
     module_name: String,
 }
 
-
 impl Task {
     /// Create a new `module` task
 
     pub fn new(data_path: Option<String>, module_path: String) -> Self {
         let module_name = module_path.split("/").last().unwrap().to_owned();
-        Self { data_path, module_path, module_name }
+        Self {
+            data_path,
+            module_path,
+            module_name,
+        }
     }
 }
 
 impl GenericTask<String> for Task {
     fn prepare(&self, host: Host) -> Result<String> {
-
         let hostvars = host.vars.clone();
-        
+
         let default = json!({});
 
-        
-        let host_var_data: &Value = hostvars.get(&format!("module_{}", self.module_name)).unwrap_or(&default); 
+        let host_var_data: &Value = hostvars
+            .get(&format!("module_{}", self.module_name))
+            .unwrap_or(&default);
 
         if let Some(datapath) = self.data_path.clone() {
             let mut data: Value = fs::read_to_string(datapath)?.parse()?;
@@ -107,7 +110,6 @@ impl GenericTask<String> for Task {
     }
 
     fn apply(&self, host: Host, data: String) -> TaskResult {
-
         let sess = host.get_session()?;
 
         let mut channel = sess.channel_session()?;
@@ -141,15 +143,14 @@ impl Task {
     fn execute_module(&self, host: &Host, data: String) -> Result<Channel> {
         let sess = host.get_session()?;
         let mut channel = sess.channel_session()?;
-        channel.exec(&format!("~/.local/tricorder/modules/{}",self.module_name))?; 
+        channel.exec(&format!("~/.local/tricorder/modules/{}", self.module_name))?;
 
         channel.write_all(data.as_bytes())?;
         channel.send_eof()?;
         Ok(channel)
     }
 
-    fn upload_module(&self, host: &Host, home_path: &str) -> Result<()>{
-
+    fn upload_module(&self, host: &Host, home_path: &str) -> Result<()> {
         let sess = host.get_session()?;
 
         // create folder
@@ -158,17 +159,19 @@ impl Task {
 
         let mut module_binary_file = File::open(format!("{}", self.module_path))?;
 
-
         let mut module_binary: Vec<u8> = vec![];
         module_binary_file.read_to_end(&mut module_binary)?;
-        
+
         let mut remote_file = sess.scp_send(
-            Path::new(&format!("{}/.local/tricorder/modules/{}", home_path, self.module_name)), 
-            0o700, 
-            module_binary.len() as u64, 
-            None
+            Path::new(&format!(
+                "{}/.local/tricorder/modules/{}",
+                home_path, self.module_name
+            )),
+            0o700,
+            module_binary.len() as u64,
+            None,
         )?;
-        
+
         remote_file.write(&module_binary)?;
         // Close the channel and wait for the whole content to be transferred
         remote_file.send_eof()?;

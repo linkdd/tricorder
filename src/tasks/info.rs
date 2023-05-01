@@ -54,18 +54,18 @@ use serde_json::json;
 pub struct Task;
 
 impl Task {
-  /// Create a new `info` task
-  pub fn new() -> Self {
-    Self {}
-  }
+    /// Create a new `info` task
+    pub fn new() -> Self {
+        Self {}
+    }
 }
 
 impl GenericTask<()> for Task {
-  fn prepare(&self, _host: Host) -> Result<()> {
-    Ok(())
-  }
+    fn prepare(&self, _host: Host) -> Result<()> {
+        Ok(())
+    }
 
-  fn apply(&self, host: Host, _data: ()) -> TaskResult {
-    Ok(json!(host))
-  }
+    fn apply(&self, host: Host, _data: ()) -> TaskResult {
+        Ok(json!(host))
+    }
 }

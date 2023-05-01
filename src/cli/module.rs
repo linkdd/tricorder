@@ -1,5 +1,5 @@
 //! Upload a Modoule to remote host and call it with data.
-//! 
+//!
 //! A module is an executable, that accepts structured
 //! data as Input (json) via stdin and performs
 //! actions based on the provided data.
@@ -9,14 +9,14 @@
 //! host var host.vars.module_<module_name>
 //! <DATA_FILE_PATH> should contain all information of the
 //! expected data structure
-//! 
+//!
 //! Usage:
-//! 
+//!
 //! ```shell
 //! $ tricorder -i inventory module --data <DATA_FILE_PATH> --module <MODULE_PATH>
 //! $ tricorder -i inventory module --module <MODULE_PATH>
 //! ```
-//! 
+//!
 
 use crate::prelude::*;
 use crate::tasks::module;

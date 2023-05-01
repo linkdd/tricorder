@@ -48,58 +48,56 @@ use crate::prelude::*;
 
 use serde_json::json;
 
-use std::{
-  io,
-  path::Path,
-  env,
-  fs,
-};
+use std::{env, fs, io, path::Path};
 
 /// Describe a `download` task
 pub struct Task {
-  /// Path to file on remote
-  remote_path: String,
-  /// Relative path on local machine to download the file to.
-  ///
-  /// The full path will be `{pwd}/{host.id}/{local_path}`.
-  local_path: String,
+    /// Path to file on remote
+    remote_path: String,
+    /// Relative path on local machine to download the file to.
+    ///
+    /// The full path will be `{pwd}/{host.id}/{local_path}`.
+    local_path: String,
 }
 
 impl Task {
-  pub fn new(remote_path: String, local_path: String) -> Self {
-    Self { remote_path, local_path }
-  }
+    pub fn new(remote_path: String, local_path: String) -> Self {
+        Self {
+            remote_path,
+            local_path,
+        }
+    }
 }
 
 impl GenericTask<String> for Task {
-  fn prepare(&self, host: Host) -> Result<String> {
-    let local_path = Path::new(&self.local_path);
+    fn prepare(&self, host: Host) -> Result<String> {
+        let local_path = Path::new(&self.local_path);
 
-    if local_path.is_absolute() {
-      return Err(Box::new(Error::IsAbsolute(
-        "Local path should be a relative path, not absolute".to_string()
-      )))
+        if local_path.is_absolute() {
+            return Err(Box::new(Error::IsAbsolute(
+                "Local path should be a relative path, not absolute".to_string(),
+            )));
+        }
+
+        let cwd = env::current_dir()?;
+        let fullpath = cwd.join(host.id.to_string()).join(local_path);
+        let fulldir = fullpath.parent().unwrap();
+        fs::create_dir_all(fulldir)?;
+
+        Ok(String::from(fullpath.to_string_lossy()))
     }
 
-    let cwd = env::current_dir()?;
-    let fullpath = cwd.join(host.id.to_string()).join(local_path);
-    let fulldir = fullpath.parent().unwrap();
-    fs::create_dir_all(fulldir)?;
+    fn apply(&self, host: Host, local_path: String) -> TaskResult {
+        let sess = host.get_session()?;
+        let sftp = sess.sftp()?;
 
-    Ok(String::from(fullpath.to_string_lossy()))
-  }
+        let mut remote_file = sftp.open(Path::new(&self.remote_path))?;
+        let mut local_file = fs::File::create(&local_path)?;
+        let size = io::copy(&mut remote_file, &mut local_file)?;
 
-  fn apply(&self, host: Host, local_path: String) -> TaskResult {
-    let sess = host.get_session()?;
-    let sftp = sess.sftp()?;
-
-    let mut remote_file = sftp.open(Path::new(&self.remote_path))?;
-    let mut local_file = fs::File::create(&local_path)?;
-    let size = io::copy(&mut remote_file, &mut local_file)?;
-
-    Ok(json!({
-      "file_path": local_path,
-      "file_size": size,
-    }))
-  }
+        Ok(json!({
+          "file_path": local_path,
+          "file_size": size,
+        }))
+    }
 }

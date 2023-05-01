@@ -23,42 +23,40 @@ use file_mode::Mode;
 use std::convert::TryFrom;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
-  let local_path = get_path(matches.value_of("local_path"))?;
-  let remote_path = get_path(matches.value_of("remote_path"))?;
-  let file_mode = get_file_mode(matches.value_of("file_mode"))?;
-  let parallel = matches.is_present("parallel");
+    let local_path = get_path(matches.value_of("local_path"))?;
+    let remote_path = get_path(matches.value_of("remote_path"))?;
+    let file_mode = get_file_mode(matches.value_of("file_mode"))?;
+    let parallel = matches.is_present("parallel");
 
-  let task = if matches.is_present("template") {
-    upload::Task::new_template(local_path, remote_path, file_mode)
-  }
-  else {
-    upload::Task::new_file(local_path, remote_path, file_mode)
-  };
+    let task = if matches.is_present("template") {
+        upload::Task::new_template(local_path, remote_path, file_mode)
+    } else {
+        upload::Task::new_file(local_path, remote_path, file_mode)
+    };
 
-  let res = hosts.run_task(&task, parallel)?;
-  println!("{}", res);
+    let res = hosts.run_task(&task, parallel)?;
+    println!("{}", res);
 
-  Ok(())
+    Ok(())
 }
 
 fn get_path(arg: Option<&str>) -> Result<String> {
-  if let Some(path) = arg {
-    Ok(String::from(path))
-  }
-  else {
-    Err(Box::new(Error::MissingInput(
-      "No input file provided".to_string(),
-    )))
-  }
+    if let Some(path) = arg {
+        Ok(String::from(path))
+    } else {
+        Err(Box::new(Error::MissingInput(
+            "No input file provided".to_string(),
+        )))
+    }
 }
 
 fn get_file_mode(arg: Option<&str>) -> Result<i32> {
-  let mut mode = Mode::from(0o644);
+    let mut mode = Mode::from(0o644);
 
-  if let Some(mode_str) = arg {
-    mode.set_str(mode_str)?;
-  }
+    if let Some(mode_str) = arg {
+        mode.set_str(mode_str)?;
+    }
 
-  let file_mode = i32::try_from(mode.mode())?;
-  Ok(file_mode)
+    let file_mode = i32::try_from(mode.mode())?;
+    Ok(file_mode)
 }

@@ -21,19 +21,18 @@ use crate::tasks::exec;
 use clap::ArgMatches;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
-  let cmd_tmpl = get_command(matches.values_of("cmd"));
-  let parallel = matches.is_present("parallel");
+    let cmd_tmpl = get_command(matches.values_of("cmd"));
+    let parallel = matches.is_present("parallel");
 
-  let task = exec::Task::new(cmd_tmpl);
-  let res = hosts.run_task(&task, parallel)?;
-  println!("{}", res);
+    let task = exec::Task::new(cmd_tmpl);
+    let res = hosts.run_task(&task, parallel)?;
+    println!("{}", res);
 
-  Ok(())
+    Ok(())
 }
 
 fn get_command(arg: Option<clap::Values<'_>>) -> String {
-  arg
-    .map(|vals| vals.collect::<Vec<_>>())
-    .map(|argv| shell_words::join(argv))
-    .unwrap()
+    arg.map(|vals| vals.collect::<Vec<_>>())
+        .map(|argv| shell_words::join(argv))
+        .unwrap()
 }

@@ -44,55 +44,55 @@
 
 use crate::prelude::*;
 
-use tinytemplate::{TinyTemplate, format_unescaped};
 use serde_json::json;
+use tinytemplate::{format_unescaped, TinyTemplate};
 
 use std::io::prelude::*;
 
 /// Describe an `exec` task
 pub struct Task {
-  /// Command template to execute on the remote host.
-  ///
-  /// Example: `"echo \"{host.id} says {host.vars.msg}\""`
-  command_template: String,
+    /// Command template to execute on the remote host.
+    ///
+    /// Example: `"echo \"{host.id} says {host.vars.msg}\""`
+    command_template: String,
 }
 
 impl Task {
-  /// Create a new `exec` task
-  pub fn new(command_template: String) -> Self {
-    Self { command_template }
-  }
+    /// Create a new `exec` task
+    pub fn new(command_template: String) -> Self {
+        Self { command_template }
+    }
 }
 
 impl GenericTask<String> for Task {
-  fn prepare(&self, host: Host) -> Result<String> {
-    let mut tt = TinyTemplate::new();
-    tt.set_default_formatter(&format_unescaped);
-    tt.add_template("cmd", self.command_template.as_str())?;
+    fn prepare(&self, host: Host) -> Result<String> {
+        let mut tt = TinyTemplate::new();
+        tt.set_default_formatter(&format_unescaped);
+        tt.add_template("cmd", self.command_template.as_str())?;
 
-    let ctx = json!({ "host": host });
-    let cmd = tt.render("cmd", &ctx)?;
-    Ok(cmd)
-  }
+        let ctx = json!({ "host": host });
+        let cmd = tt.render("cmd", &ctx)?;
+        Ok(cmd)
+    }
 
-  fn apply(&self, host: Host, command: String) -> TaskResult {
-    let sess = host.get_session()?;
-    let mut channel = sess.channel_session()?;
-    channel.exec(&command)?;
+    fn apply(&self, host: Host, command: String) -> TaskResult {
+        let sess = host.get_session()?;
+        let mut channel = sess.channel_session()?;
+        channel.exec(&command)?;
 
-    let mut stdout = String::new();
-    channel.read_to_string(&mut stdout)?;
-    let mut stderr = String::new();
-    channel.stderr().read_to_string(&mut stderr)?;
+        let mut stdout = String::new();
+        channel.read_to_string(&mut stdout)?;
+        let mut stderr = String::new();
+        channel.stderr().read_to_string(&mut stderr)?;
 
-    channel.wait_close()?;
+        channel.wait_close()?;
 
-    let exit_code = channel.exit_status()?;
+        let exit_code = channel.exit_status()?;
 
-    Ok(json!({
-      "exit_code": exit_code,
-      "stdout": stdout,
-      "stderr": stderr,
-    }))
-  }
+        Ok(json!({
+          "exit_code": exit_code,
+          "stdout": stdout,
+          "stderr": stderr,
+        }))
+    }
 }
