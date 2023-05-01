@@ -78,16 +78,15 @@ fn main() -> Result<()> {
         Command::new("module")
             .about("upload and execute Module with data")
             .arg(
-              arg!(data_file_path: -d --data "sets the Data-path [default: ./data/*")
-                  .default_value("./data/")
+              arg!(data_file_path: -d --data [DATA_PATH] "sets the Data-path")
                   .required(false)
             )
             .arg(
-              arg!(module: -b --bin "Module that should run")
+              arg!(module: -m --module [MODULE_PATH] "Module that should run")
                   .required(true)
             )
       )
     .get_matches();
 
-  cli::run(matches)
+    cli::run(matches)
 }

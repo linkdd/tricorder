@@ -19,20 +19,27 @@ use std::fs::File;
 
 /// Describe an `module` task
 pub struct Task {
-    data: String,
-    executable: String,
+    data_path: Option<String>, // todo! implement with &str and livetime
+    module_path: String,
+    module_name: String,
 }
 
 impl Task {
     /// Create a new `module` task
-    pub fn new(data: String, executable: String) -> Self {
-        Self { data, executable }
+
+    pub fn new(data_path: Option<String>, module_path: String) -> Self {
+        let module_name = module_path.split("/").last().unwrap().to_owned(); // todo better error handling
+        Self { data_path, module_path, module_name }
     }
 }
 
 impl GenericTask<String> for Task {
     fn prepare(&self, host: Host) -> Result<String> {
 
+        if let Some(datapath) = self.data_path.clone() {
+
+        }
+        // todo! merge data from data-file and host-vars
         let data = serde_json::to_string(
             host.vars.get("module_mod").unwrap_or(&json!({}))
         )?;
@@ -74,7 +81,7 @@ impl Task {
     fn execute_module(&self, host: &Host, data: String) -> Result<Channel> {
         let sess = host.get_session()?;
         let mut channel = sess.channel_session()?;
-        channel.exec("~/.local/tricorder/modules/mod")?; // !todo: execute binary with data
+        channel.exec(&format!("~/.local/tricorder/modules/{}",self.module_name))?; 
 
         channel.write_all(data.as_bytes())?;
         channel.send_eof()?;
@@ -89,13 +96,14 @@ impl Task {
         let mut channel = sess.channel_session()?;
         channel.exec("mkdir -p ~/.local/tricorder/modules")?;
 
-        let mut module_binary_file = File::open(format!("{}{}", self.data, self.executable))?;
+        let mut module_binary_file = File::open(format!("{}", self.module_path))?;
+
 
         let mut module_binary: Vec<u8> = vec![];
         module_binary_file.read_to_end(&mut module_binary)?;
         // !todo(fix): create dir if not exists
         let mut remote_file = sess.scp_send(
-            Path::new(&format!("{}/.local/tricorder/modules/mod", home_path)), 
+            Path::new(&format!("{}/.local/tricorder/modules/{}", home_path, self.module_name)), 
             0o700, 
             module_binary.len() as u64, 
             None
@@ -109,13 +117,5 @@ impl Task {
         remote_file.wait_close()?;
 
         Ok(())
-
-        /*if rsync_output.status.success() {
-            Ok(())
-        } else {
-            Err(Box::new(Error::UploadFailed(
-                "failed to upload module".to_string(),
-            )))
-        }*/
     }
 }
