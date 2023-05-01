@@ -1,8 +1,8 @@
-use tricorder::{prelude::Result, cli};
-use clap::{command, arg, Command};
+use clap::{arg, command, Command};
+use tricorder::{cli, prelude::Result};
 
 fn main() -> Result<()> {
-  let matches = command!()
+    let matches = command!()
     .propagate_version(true)
     .subcommand_required(true)
     .allow_external_subcommands(true)

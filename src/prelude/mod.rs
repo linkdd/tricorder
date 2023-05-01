@@ -46,14 +46,9 @@
 //!   .to_owned();
 //! ```
 
-mod result;
 mod error;
 mod inventory;
+mod result;
 mod tasks;
 
-pub use self::{
-  result::Result,
-  error::Error,
-  inventory::*,
-  tasks::*,
-};
+pub use self::{error::Error, inventory::*, result::Result, tasks::*};
