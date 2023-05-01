@@ -83,12 +83,8 @@ fn main() -> Result<()> {
                   .required(false)
             )
             .arg(
-              arg!(all: -a --all "runs all Modules")
-                  .required(false)
-            )
-            .arg(
-              arg!(module: [MODULE] "Module that should run")
-                  .required(false).last(true)
+              arg!(module: -b --bin "Module that should run")
+                  .required(true)
             )
       )
     .get_matches();
