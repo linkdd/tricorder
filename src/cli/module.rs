@@ -24,7 +24,7 @@ use crate::tasks::module;
 use clap::ArgMatches;
 
 pub fn run(hosts: Vec<Host>, matches: &ArgMatches) -> Result<()> {
-    let data_path = get_data_path(matches.value_of("data_file_path")); //  todo(optional) implement with &str and livetimes
+    let data_path = get_data_path(matches.value_of("data_file_path"));
     let module_path = get_path(matches.value_of("module"))?;
     let parallel = matches.is_present("parallel");
 
