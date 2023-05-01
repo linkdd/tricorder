@@ -2,13 +2,6 @@
 //! 
 //! Example usage:
 //! 
-//! example for file /path/to/data_file.json 
-//! ```json
-//! {
-//!     "overwritten data": "data_from_file1",
-//!     "filedata": "data_from_file1"
-//! }
-//! ```
 //! an example for a Moule could be a simple shell-script
 //! which reads data from stdin and just echos it
 //! ```shell
@@ -35,7 +28,12 @@
 //! 
 //! let task = module::Taks::new(
 //!     Some("/path/to/data_file.json".to_string(),
-//!     "/path/to/module.exe".to_string(),
+//!     r#"
+//!     {
+//!         "overwritten data": "data_from_file1",
+//!         "filedata": "data_from_file1"
+//!     }
+//!     "#.to_string(),
 //! );
 //! 
 //! let result = inventory.hosts.run_task_seq(&task).unwrap();
