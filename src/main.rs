@@ -78,6 +78,9 @@ fn main() -> Result<()> {
         Command::new("module")
             .about("upload and execute Module with data")
             .arg(
+              arg!(parallel: -p --parallel "If set, the task will be executed concurrently")
+            )
+            .arg(
               arg!(data_file_path: -d --data [DATA_PATH] "sets the Data-path")
                   .required(false)
             )
