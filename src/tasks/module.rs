@@ -28,12 +28,12 @@
 //!
 //! let task = module::Taks::new(
 //!     Some("/path/to/data_file.json".to_string(),
-//!     r#"
-//!     {
-//!         "overwritten data": "data_from_file1",
-//!         "filedata": "data_from_file1"
-//!     }
-//!     "#.to_string(),
+//!     json!(
+//!         {
+//!             "overwritten data": "data_from_file1",
+//!             "filedata": "data_from_file1"
+//!         }
+//!     )
 //! );
 //!
 //! let result = inventory.hosts.run_task_seq(&task).unwrap();
@@ -89,8 +89,8 @@ impl Task {
     }
 }
 
-impl GenericTask<String> for Task {
-    fn prepare(&self, host: Host) -> Result<String> {
+impl GenericTask<Value> for Task {
+    fn prepare(&self, host: Host) -> Result<Value> {
         let hostvars = host.vars.clone();
 
         let default = json!({});
@@ -103,13 +103,13 @@ impl GenericTask<String> for Task {
             let mut data: Value = fs::read_to_string(datapath)?.parse()?;
 
             merge(&mut data, host_var_data);
-            Ok(serde_json::to_string(&data)?)
+            Ok(data)
         } else {
-            Ok(serde_json::to_string(&host_var_data)?)
+            Ok(host_var_data.clone())
         }
     }
 
-    fn apply(&self, host: Host, data: String) -> TaskResult {
+    fn apply(&self, host: Host, data: Value) -> TaskResult {
         let sess = host.get_session()?;
 
         let mut channel = sess.channel_session()?;
@@ -140,12 +140,12 @@ impl GenericTask<String> for Task {
     }
 }
 impl Task {
-    fn execute_module(&self, host: &Host, data: String) -> Result<Channel> {
+    fn execute_module(&self, host: &Host, data: Value) -> Result<Channel> {
         let sess = host.get_session()?;
         let mut channel = sess.channel_session()?;
         channel.exec(&format!("~/.local/tricorder/modules/{}", self.module_name))?;
 
-        channel.write_all(data.as_bytes())?;
+        channel.write_all(serde_json::to_string(&data)?.as_bytes())?;
         channel.send_eof()?;
         Ok(channel)
     }
