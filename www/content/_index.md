@@ -46,7 +46,7 @@ $ tricorder -i /path/to/inventory do -- echo "{host.id} says {host.vars.msg}"
 ## Add dependency
 
 ```toml
-tricorder = "0.10"
+tricorder = "0.10.1"
 ```
 
 ## Write your recipe
