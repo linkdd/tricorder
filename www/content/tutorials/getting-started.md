@@ -13,6 +13,9 @@ weight = 1
 
 | package | minimal Version |
 | - | - |
+| Rust | tested with version 1.69 |
+| cargo | tested with version 1.67.0 |
+| git | tested with version 2.40.0 |
 
 Clone from repository:
 ```shell
