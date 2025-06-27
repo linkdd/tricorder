@@ -4,61 +4,81 @@
 //!
 //! an example for a Moule could be a simple shell-script
 //! which reads data from stdin and just echos it
+//! the shell script is named /tmp/mod.sh in this example
 //! ```shell
 //! #!/bin/bash
 //! read -r data
 //! echo "$data"
 //! ```
 //!
-//! ```no_run
+//! ```no_run 
+//! use serde_json::json;
 //! use tricorder::prelude::*;
 //! use tricorder::tasks::module;
-//! use serde_json::json;
 //!
-//! let inventory = Inventory::new()
-//!   .add_host(
-//!     Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
-//!       .set_user("root".to_string())
-//!       .add_tag(Host::tag("local").unwrap())
-//!       .set_var("msg".to_string(), json!("hello"))
-//!       .set_var("module_mod".to_string(), json!({"overwrittendata":"data_from_var1", "vardata":"data_from_var2"}))
-//!       .to_owned()
-//!   )
-//!   .to_owned();
-//!
-//! let task = module::Taks::new(
-//!     Some("/path/to/data_file.json".to_string(),
-//!     json!(
-//!         {
-//!             "overwritten data": "data_from_file1",
-//!             "filedata": "data_from_file1"
-//!         }
-//!     )
-//! );
-//!
-//! let result = inventory.hosts.run_task_seq(&task).unwrap();
+//! const MODULE_FILE: &str = r#"
+//! #!/bin/bash
+//! read -r data
+//! echo echo output: "$data"
+//! "#;
+//! 
+//! const DATA_FILE: &str = r#"
+//! {
+//!     "data": "data_from_file",
+//!     "overwrittendata":"data from file shoul be overwritten by var modue_mod.sh"
+//! }
+//! "#;
+//! 
+//! const BINARY_PATH: &str = "/tmp/mod.sh";
+//! const DATA_PATH: &str = "/tmp/data_file.json";
+//! 
+//! fn main() {
+//!     //write the module file
+//! 
+//!     std::fs::write(BINARY_PATH, MODULE_FILE).unwrap();
+//!     std::fs::write(DATA_PATH, DATA_FILE).unwrap();
+//! 
+//!     let inventory = Inventory::new()
+//!         .add_host(
+//!             Host::new(Host::id("localhost").unwrap(), "localhost:22".to_string())
+//!                 .set_user("root".to_string())
+//!                 .add_tag(Host::tag("local").unwrap())
+//!                 .set_var("msg".to_string(), json!("hello"))
+//!                 .set_var(
+//!                     // you can define host variables overwriteing the values of the data file 
+//!                     // these variables sould be named "module_<name of the binary>" in This case mod.sh (see BINARY_PATH)
+//!                     "module_mod.sh".to_string(),
+//!                     json!({"overwrittendata":"data_from_var1", "vardata":"data_from_var2"}),
+//!                 )
+//!                 .to_owned(),
+//!         )
+//!         .to_owned();
+//! 
+//!     let task = module::Task::new(Some(DATA_PATH.to_string()), BINARY_PATH.to_string());
+//! 
+//!     let result = inventory.hosts.run_task_seq(&task).unwrap();
+//! 
+//!     println!("{:#?}", result);
+//! }
 //! ```
 //!
 //! The result looks like this:
 //! ```json
-//! [
-//!   {
-//!     "host": "localhost",
-//!     "info": {
-//!         "exit_code":0,
-//!         "stderr":"",
-//!         "stdout":"{
-//!             \"fuledata\":\"data_from_file1\",
-//!             \"overwrittendata\":\"data_from_var11\",
-//!             \"vardata\":\"data_from_var2\"}\n"
+//! Array [
+//!     Object {
+//!         "host": String("localhost"),
+//!         "info": Object {
+//!             "exit_code": Number(0),
+//!             "stderr": String(""),
+//!             "stdout": String("echo output: {\"data\":\"data_from_file\",\"overwrittendata\":\"data_from_var1\",\"vardata\":\"data_from_var2\"}\n"),
 //!         },
-//!     "success":true}]
-//!   }
+//!         "success": Bool(true),
+//!     },
 //! ]
 //! ```
 //!
 //! you can see, that the variable "overwrittendata" gets
-//! overwritten by the host-variable
+//! overwritten by the host-variable module_mod.sh
 
 use crate::prelude::*;
 
