@@ -44,6 +44,8 @@ jobs:
           yarn run build
 
       - name: publish@scm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd www/public/
           touch .nojekyll
